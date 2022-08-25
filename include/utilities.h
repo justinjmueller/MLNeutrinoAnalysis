@@ -13,4 +13,6 @@ std::pair<size_t, size_t> find_match(const IMatch& m,
 				     const std::vector<Interaction>& from_int,
 				     const std::vector<Interaction>& to_int);
 std::vector<bool> find_best_cluster(const std::vector<Particle>& part, double thr);
+void parse_particle_string(std::string s, std::vector<uint16_t>& counts);
+bool match_strings(std::string s1, std::string s2);
 #endif

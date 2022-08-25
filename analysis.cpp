@@ -31,8 +31,8 @@ int main()
   std::string base("bnb_numu");
   //std::string base("test");
   //std::string sub("_mpvr");
-  //std::string sub("_maxaggr");
-  std::string sub("");
+  std::string sub("_maxaggr");
+  //std::string sub("");
   
   std::map<int32_t, Event> events;
   read_all_events(events, sub);
@@ -48,6 +48,8 @@ int main()
   std::vector<pair_ptr> pair_ana;
   ana.push_back(ptr(new PurityEfficiency("purity_1mu1p", "0ph0e1mu0pi1p", true)));
   ana.push_back(ptr(new PurityEfficiency("efficiency_1mu1p", "0ph0e1mu0pi1p", false)));
+  ana.push_back(ptr(new PurityEfficiency("purity_numucc", "*ph*e1mu*pi*p", true)));
+  ana.push_back(ptr(new PurityEfficiency("efficiency_numucc", "*ph*e1mu*pi*p", false)));
   ana.push_back(ptr(new PurityEfficiency("purity_2ph1mu", "2ph0e1mu0pi0p", true)));
   ana.push_back(ptr(new PurityEfficiency("efficiency_2ph1mu", "2ph0e1mu0pi0p", false)));
   ana.push_back(ptr(new Unmatched("unmatched_ptt")));

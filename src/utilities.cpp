@@ -64,3 +64,38 @@ std::vector<bool> find_best_cluster(const std::vector<Particle>& part, double th
   }
   return distances.at(best_match).second;
 }
+
+void parse_particle_string(std::string s, std::vector<uint16_t>& counts)
+{
+  std::vector<std::string> types = {"ph", "e", "mu", "pi", "p"};
+  size_t pos(0), prv(0);
+  for(size_t t(0); t < 5; ++t)
+  {
+    pos = s.find(types[t], prv);
+    auto sub = s.substr(prv, pos-prv);
+    if(sub != "*")
+      counts.at(t) = std::stoi(sub);
+    else
+      counts.at(t) = 999;
+    prv = pos + types[t].length();
+  }
+}
+
+bool match_strings(std::string s1, std::string s2)
+{
+  if(s2.find("*") == std::string::npos)
+    return (s1 == s2);
+  else
+  {
+    std::vector<uint16_t> c1(5,0), c2(5,0);
+    parse_particle_string(s1, c1);
+    parse_particle_string(s2, c2);
+    bool matches(true);
+    for(size_t i(0); i < 5; ++i)
+    {
+      if(c2.at(i) != 999)
+	matches = matches && (c1.at(i) == c2.at(i));
+    }
+    return matches;
+  }
+}

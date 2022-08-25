@@ -43,13 +43,10 @@ public:
 	to_counts.insert(std::make_pair(m.to_index,1));
       else to_counts.at(m.to_index)++;
     }
-    //v[0] = from_counts.size();
     for(auto &c : to_counts)
       if(c.second > 1 && c.first != -1) v[1] += c.second;
     if(to_counts.find(-1) != to_counts.end()) v[1]--;
     for(const Interaction& I : evt.interactions) v[0]++;
-    //for(auto& c : to_counts)
-    //  if(c.second > 1 && c.first != -1) v[1] += c.second;
     this->add_vars(v);
   }
 };
@@ -209,10 +206,10 @@ public:
     std::vector<double> v(2, 0);
     for(const IMatch& m : (do_purity ? evt.matches_ptt : evt.matches_ttp))
     {
-      if(m.from_primaries == target)
+      if(match_strings(m.from_primaries, target))
       {
 	v[0]++;
-	if(m.to_primaries == target) v[1]++;
+	if(match_strings(m.to_primaries, target)) v[1]++;
       }     
     }
     this->add_vars(v);

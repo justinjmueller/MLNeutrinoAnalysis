@@ -29,21 +29,8 @@ Interaction::Interaction(const CSVRow& row)
   vertex_y = std::stod(v0.at(1));
   vertex_z = std::stod(v0.at(2));
 
-  std::vector<std::string> types = {"ph", "e", "mu", "pi", "p"};
-  size_t pos(0), prv(0);
-  for(size_t t(0); t < 5; ++t)
-  {
-    pos = particle_string.find(types[t], prv);
-    particle_multiplicity.at(t) = std::stoi(particle_string.substr(prv, pos-prv));
-    prv = pos + types[t].length();
-  }
-  prv = 0;
-  for(size_t t(0); t < 5; ++t)
-  {
-    pos = primary_string.find(types[t], prv);
-    primary_multiplicity.at(t) = std::stoi(primary_string.substr(prv, pos-prv));
-    prv = pos + types[t].length();
-  }
+  parse_particle_string(particle_string, particle_multiplicity);
+  parse_particle_string(primary_string, primary_multiplicity);
 }
 
 Interaction::Interaction()
