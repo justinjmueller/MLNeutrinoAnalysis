@@ -44,8 +44,10 @@ int main()
 
   typedef std::unique_ptr<Analyzer<double> > ptr;
   typedef std::unique_ptr<Analyzer<std::pair<double, double> > > pair_ptr;
+  typedef std::unique_ptr<Analyzer<std::pair<std::string, std::string> > > string_pair_ptr;
   std::vector<ptr> ana;
   std::vector<pair_ptr> pair_ana;
+  std::vector<string_pair_ptr> string_pair_ana;
   ana.push_back(ptr(new PurityEfficiency("purity_1mu1p", "0ph0e1mu0pi1p", true)));
   ana.push_back(ptr(new PurityEfficiency("efficiency_1mu1p", "0ph0e1mu0pi1p", false)));
   ana.push_back(ptr(new PurityEfficiency("purity_numucc", "*ph*e1mu*pi*p", true)));
@@ -66,6 +68,8 @@ int main()
   ana.push_back(ptr(new ParticleMultiplicity("proton_multiplicity", 4)));
   ana.push_back(ptr(new NeutrinoMomentum("neutrino_momentum")));
   ana.push_back(ptr(new VertexResolution("vertex_resolution")));
+  string_pair_ana.push_back(string_pair_ptr(new Confusion("confusion_1mu1p", "0ph0e1mu0pi1p")));
+  string_pair_ana.push_back(string_pair_ptr(new Confusion("confusion_2ph1mu", "2ph0e1mu0pi0p")));
   pair_ana.push_back(pair_ptr(new ParticleEnergy("muon_energy", 2)));
   pair_ana.push_back(pair_ptr(new ParticleEnergy("pion_energy", 3)));
   pair_ana.push_back(pair_ptr(new ParticleEnergy("proton_energy", 4)));
@@ -76,11 +80,13 @@ int main()
     evt = &(obj.second);
     event_tree.Fill();
     for(auto& a : ana) (*a)(obj.second);
+    for(auto& a : string_pair_ana) (*a)(obj.second);
     for(auto& a : pair_ana) (*a)(obj.second);
   }
   event_tree.Write();
 
   for(auto& a: ana) output.WriteObject(&a->get_vars(), a->get_name().c_str());
+  for(auto& a: string_pair_ana) output.WriteObject(&a->get_vars(), a->get_name().c_str());
   for(auto& a: pair_ana) output.WriteObject(&a->get_vars(), a->get_name().c_str());
   return 0;
 }

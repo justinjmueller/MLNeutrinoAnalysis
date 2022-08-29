@@ -25,6 +25,23 @@ public:
   }
 };
 
+class Confusion : public Analyzer<std::pair<std::string, std::string> >
+{
+  std::string target;
+public:
+  Confusion(std::string n, std::string t)
+  { name = n; target = t; };
+  void operator()(const Event& evt)
+  {
+    std::vector<std::pair<std::string, std::string>> v;
+    for(const IMatch& m : evt.matches_ptt)
+      if(match_strings(m.from_primaries, target)) v.push_back(std::make_pair(m.to_primaries, m.from_primaries));
+    for(const IMatch& m : evt.matches_ttp)
+      if(match_strings(m.from_primaries, target)) v.push_back(std::make_pair(m.from_primaries, m.to_primaries));
+    this->add_vars(v);
+  }
+};
+
 class SplitInteraction : public Analyzer<double>
 {
 public:
