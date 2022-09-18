@@ -9,6 +9,7 @@
 #include "particle.h"
 #include "interaction.h"
 #include "neutrino.h"
+#include "pmatch.h"
 #include "imatch.h"
 #include "event.h"
 #include "analyzer.h"
@@ -29,10 +30,7 @@ void read_all_events(std::map<int32_t, Event>& events, std::string sub);
 int main()
 {
   std::string base("bnb_numu");
-  //std::string base("test");
-  //std::string sub("_mpvr");
-  std::string sub("_maxaggr");
-  //std::string sub("");
+  std::string sub("");
   
   std::map<int32_t, Event> events;
   read_all_events(events, sub);
@@ -136,6 +134,10 @@ void read_all_events(std::map<int32_t, Event>& events, std::string sub)
   read_csv("../csv/matched_ptt", sub, matches_ptt);
   std::vector<IMatch> matches_ttp;
   read_csv("../csv/matched_ttp", sub, matches_ttp);
+  std::vector<PMatch> pmatches_ptt;
+  read_csv("../csv/pmatch_ptt", sub, pmatches_ptt);
+  std::vector<PMatch> pmatches_ttp;
+  read_csv("../csv/pmatch_ttp", sub, pmatches_ttp);
 
   for(Neutrino& nu : neutrinos)
   {
@@ -194,6 +196,18 @@ void read_all_events(std::map<int32_t, Event>& events, std::string sub)
     if(events.find(m.image_index) != events.end()) events.at(m.image_index).add_match(m, false);
     else std::cerr << "Match found without corresponding event!" << std::endl;
   }
+
+  for(PMatch& m : pmatches_ptt)
+  {
+    if(events.find(m.image_index) != events.end()) events.at(m.image_index).add_pmatch(m, true);
+    else std::cerr << "Particle Match found without corresponding event!" << std::endl;
+  }
+  for(PMatch& m : pmatches_ttp)
+  {
+    if(events.find(m.image_index) != events.end()) events.at(m.image_index).add_pmatch(m, false);
+    else std::cerr << "Particle Match found without corresponding event!" << std::endl;
+  }
+  
   for(auto& evt : events)
   {
     for(Interaction& I : evt.second.interactions) I.update_particles(VTX_THRESHOLD);

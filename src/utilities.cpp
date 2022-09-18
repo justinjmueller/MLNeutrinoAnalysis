@@ -31,6 +31,18 @@ std::pair<size_t, size_t> find_match(const IMatch& m,
   return res;
 }
 
+std::pair<size_t, size_t> find_match(const PMatch& m,
+				     const std::vector<Particle>& from_part,
+				     const std::vector<Particle>& to_part)
+{
+  std::pair<size_t, size_t> res(std::make_pair(-1,-1));
+  for(size_t i(0); i < from_part.size(); ++i)
+    if(from_part.at(i).particle_index == m.from_index) res.first = i;
+  for(size_t i(0); i < to_part.size(); ++i)
+    if(to_part.at(i).particle_index == m.to_index) res.second = i;
+  return res;
+}
+
 std::vector<bool> find_best_cluster(const std::vector<Particle>& part, double thr)
 {
   std::vector<std::pair<ROOT::Math::XYZPoint, std::vector<bool> > > distances;

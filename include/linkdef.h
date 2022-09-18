@@ -8,6 +8,7 @@
 #pragma link C++ class Event+;
 #pragma link C++ class Neutrino+;
 #pragma link C++ class IMatch+;
+#pragma link C++ class PMatch+;
 #pragma link C++ class Interaction+;
 #pragma link C++ class Particle+;
 #pragma link C++ class vector<pair<string, string> >+;

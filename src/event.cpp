@@ -1,6 +1,7 @@
 #include <vector>
 #include "neutrino.h"
 #include "interaction.h"
+#include "pmatch.h"
 #include "imatch.h"
 #include "event.h"
 
@@ -32,4 +33,10 @@ void Event::add_match(const IMatch& ma, bool ptt=true)
 {
   if(ptt) matches_ptt.push_back(ma);
   else matches_ttp.push_back(ma);
+}
+
+void Event::add_pmatch(const PMatch& ma, bool ptt=true)
+{
+  if(ptt) pmatches_ptt.push_back(ma);
+  else pmatches_ttp.push_back(ma);
 }
