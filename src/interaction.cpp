@@ -67,8 +67,8 @@ void Interaction::add_particle(const Particle& p)
   }
   else if(p.pid == 4)
   {
-    vis_energy += (PROTON_MASS + p.energy_dep);
-    reco_vis_energy += (PROTON_MASS + p.reco_energy);
+    vis_energy += p.energy_dep;
+    reco_vis_energy += p.reco_energy;
   }
 }
 

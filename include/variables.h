@@ -25,6 +25,34 @@ public:
   }
 };
 
+class ParticleConfusion : public Analyzer<std::pair<double, double> >
+{
+public:
+  ParticleConfusion(std::string n)
+  { name = n; };
+  void operator()(const Event& evt)
+  {
+    std::vector<std::pair<double, double>> v;
+    for(const PMatch& m : evt.pmatches_ptt)
+      v.push_back(std::make_pair(m.to_pid, m.from_pid));
+    this->add_vars(v);
+  }
+};
+
+class PrimaryConfusion : public Analyzer<std::pair<double, double> >
+{
+public:
+  PrimaryConfusion(std::string n)
+  { name = n; };
+  void operator()(const Event& evt)
+  {
+    std::vector<std::pair<double, double>> v;
+    for(const PMatch& m : evt.pmatches_ptt)
+      v.push_back(std::make_pair(double(m.to_primary), double(m.from_primary)));
+    this->add_vars(v);
+  }
+};
+
 class Confusion : public Analyzer<std::pair<std::string, std::string> >
 {
   std::string target;
@@ -35,9 +63,9 @@ public:
   {
     std::vector<std::pair<std::string, std::string>> v;
     for(const IMatch& m : evt.matches_ptt)
-      if(match_strings(m.from_primaries, target)) v.push_back(std::make_pair(m.to_primaries, m.from_primaries));
-    for(const IMatch& m : evt.matches_ttp)
-      if(match_strings(m.from_primaries, target)) v.push_back(std::make_pair(m.from_primaries, m.to_primaries));
+      v.push_back(std::make_pair(m.to_primaries, m.from_primaries));
+    //for(const IMatch& m : evt.matches_ttp)
+    //  if(match_strings(m.from_primaries, target)) v.push_back(std::make_pair(m.from_primaries, m.to_primaries));
     this->add_vars(v);
   }
 };
@@ -169,8 +197,34 @@ public:
     std::vector<std::pair<double, double> > v;
     for(const Interaction& I : evt.interactions)
     {
-      v.push_back(std::make_pair(I.vis_energy, I.reco_vis_energy));
-      if(!I.contained || v.back().first == 0.0) v.pop_back();
+      if(match_strings(I.primary_string, target))
+      {
+	v.push_back(std::make_pair(I.vis_energy, I.reco_vis_energy));
+	if(!I.contained || v.back().first == 0.0) v.pop_back();
+      }
+    }
+    this->add_vars(v);
+  }
+  
+};
+
+class VisEnergyToFull : public Analyzer<std::pair<double, double> >
+{
+  std::string target;
+  bool truth;
+public:
+  VisEnergyToFull(std::string n, std::string t, bool tr)
+  { name = n; target = t; truth = tr; };
+  void operator()(const Event& evt)
+  {
+    std::vector<std::pair<double, double> > v;
+    for(const Interaction& I : evt.interactions)
+    {
+      if(match_strings(I.primary_string, target))
+      {
+	v.push_back(std::make_pair(1000*evt.neutrinos.at(0).momentum, (truth ? I.vis_energy : I.reco_vis_energy)));
+	if(!I.contained || v.back().second == 0.0) v.pop_back();
+      }
     }
     this->add_vars(v);
   }
@@ -220,15 +274,16 @@ public:
   { name = n; target = t; do_purity = purity; };
   void operator()(const Event& evt)
   {
-    std::vector<double> v(2, 0);
+    std::vector<double> v(3, 0);
     for(const IMatch& m : (do_purity ? evt.matches_ptt : evt.matches_ttp))
     {
       if(match_strings(m.from_primaries, target))
       {
 	v[0]++;
 	if(match_strings(m.to_primaries, target)) v[1]++;
-      }     
+      }
     }
+    v[2] = evt.neutrinos.at(0).momentum;
     this->add_vars(v);
   }
 };

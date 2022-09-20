@@ -31,6 +31,7 @@ int main()
 {
   std::string base("bnb_numu");
   std::string sub("");
+  //std::string sub("_sep19");
   
   std::map<int32_t, Event> events;
   read_all_events(events, sub);
@@ -72,6 +73,13 @@ int main()
   pair_ana.push_back(pair_ptr(new ParticleEnergy("pion_energy", 3)));
   pair_ana.push_back(pair_ptr(new ParticleEnergy("proton_energy", 4)));
   pair_ana.push_back(pair_ptr(new VisEnergy("vis_energy_1mu1p", "0ph0e1mu0pi1p")));
+  pair_ana.push_back(pair_ptr(new VisEnergyToFull("vis_energy_full_1mu1p", "0ph0e1mu0pi1p", true)));
+  pair_ana.push_back(pair_ptr(new VisEnergyToFull("reco_vis_energy_full_1mu1p", "0ph0e1mu0pi1p", false)));
+  pair_ana.push_back(pair_ptr(new VisEnergy("vis_energy_numucc", "*ph*e1mu*pi*p")));
+  pair_ana.push_back(pair_ptr(new VisEnergyToFull("vis_energy_full_numucc", "*ph*e1mu*pi*p", true)));
+  pair_ana.push_back(pair_ptr(new VisEnergyToFull("reco_vis_energy_full_numucc", "*ph*e1mu*pi*p", false)));
+  pair_ana.push_back(pair_ptr(new ParticleConfusion("confusion_particle")));
+  pair_ana.push_back(pair_ptr(new PrimaryConfusion("confusion_primary")));
   
   for(auto& obj : events)
   { 
