@@ -8,6 +8,35 @@
 #define PION_MASS 139.57039
 #define PROTON_MASS 938.2720813
 
+class SoftmaxPID : public Analyzer<double>
+{
+  uint16_t from_pid, to_pid;
+public:
+  SoftmaxPID(std::string n, uint16_t fromp, uint16_t top)
+  { name = n; from_pid = fromp; to_pid = top; };
+  void operator()(const Event& evt)
+  {
+    std::vector<double> v;
+    for(const PMatch& m : evt.pmatches_ttp)
+    {
+      try
+      {
+	if(m.to_index != -1 && m.from_pid == from_pid && m.to_pid >= 2 && m.from_primary)
+	{
+	  v.push_back(evt.reco_particle_map.at(m.to_index)->pid);
+	  v.push_back(evt.reco_particle_map.at(m.to_index)->softmax_muon);
+	  v.push_back(evt.reco_particle_map.at(m.to_index)->softmax_pion);
+	}
+      }
+      catch (const std::exception&)
+      {
+	std::cerr << "Invalid: " << m.from_index << std::endl;
+      }
+    }
+    this->add_vars(v);
+  }
+};
+
 class Unmatched : public Analyzer<double>
 {
 public:
@@ -27,28 +56,28 @@ public:
 
 class ParticleConfusion : public Analyzer<std::pair<double, double> >
 {
+  bool primary_only;
+  bool no_neutron_ancestor;
 public:
-  ParticleConfusion(std::string n)
-  { name = n; };
+  ParticleConfusion(std::string n, bool p=false, bool a=false)
+  { name = n; primary_only = p; no_neutron_ancestor = a; };
   void operator()(const Event& evt)
   {
     std::vector<std::pair<double, double>> v;
     for(const PMatch& m : evt.pmatches_ptt)
-      v.push_back(std::make_pair(m.to_pid, m.from_pid));
-    this->add_vars(v);
-  }
-};
-
-class PrimaryConfusion : public Analyzer<std::pair<double, double> >
-{
-public:
-  PrimaryConfusion(std::string n)
-  { name = n; };
-  void operator()(const Event& evt)
-  {
-    std::vector<std::pair<double, double>> v;
-    for(const PMatch& m : evt.pmatches_ptt)
-      v.push_back(std::make_pair(double(m.to_primary), double(m.from_primary)));
+    {
+      try
+      {
+	if((!primary_only || m.to_primary) &&
+	   (!no_neutron_ancestor || (m.to_pid >= 2 && evt.particle_map.at(m.to_index)->neutron_ancestor)))
+	  v.push_back(std::make_pair(m.to_pid + 5*m.to_primary, m.from_pid + 5*m.from_primary));
+      }
+      catch (const std::exception&)
+      {
+	std::cerr << "Image: " << evt.image_index
+		  << ", Particle ID: " << m.to_index << std::endl;
+      }
+    }
     this->add_vars(v);
   }
 };
@@ -64,8 +93,6 @@ public:
     std::vector<std::pair<std::string, std::string>> v;
     for(const IMatch& m : evt.matches_ptt)
       v.push_back(std::make_pair(m.to_primaries, m.from_primaries));
-    //for(const IMatch& m : evt.matches_ttp)
-    //  if(match_strings(m.from_primaries, target)) v.push_back(std::make_pair(m.from_primaries, m.to_primaries));
     this->add_vars(v);
   }
 };
@@ -168,18 +195,43 @@ public:
 class ParticleEnergy : public Analyzer<std::pair<double, double> >
 {
   int16_t pid;
+  bool ptt;
+  bool all_tracks;
 public:
-  ParticleEnergy(std::string n, int16_t p)
-  { name = n; pid = p; };
+  ParticleEnergy(std::string n, int16_t p, bool m=false, bool a=false)
+  { name = n; pid = p; ptt = m; all_tracks = a; };
   void operator()(const Event& evt)
   {
     std::vector<std::pair<double, double>> v;
-    for(const Interaction& I : evt.interactions)
+    if(ptt)
     {
-      for(const Particle& p : I.particles)
+      for(const PMatch& m : evt.pmatches_ptt)
       {
-	if(p.pid == pid && p.contained && p.primary && p.nchildren <= 1)
-	  v.push_back(std::make_pair(p.energy_dep, p.reco_energy));
+	if(m.to_index != -1 && m.to_pid == pid && (all_tracks ? m.from_pid >=2 : m.from_pid == pid))
+	{
+	  try
+	  {
+	    Particle *p = evt.particle_map.at(m.to_index);
+	    Particle *q = evt.reco_particle_map.at(m.from_index);
+	    if(p->contained && p->nchildren <= 1)
+	      v.push_back(std::make_pair(p->energy_dep, q->reco_energy));
+	  }
+	  catch (const std::exception&)
+	  {
+	    std::cerr << "Invalid: " << m.from_index << std::endl;
+	  }
+	}
+      }
+    }
+    else
+    {
+      for(const Interaction& I : evt.interactions)
+      {
+	for(const Particle& p : I.particles)
+	{
+	  if(p.pid == pid && p.contained && p.primary && p.nchildren <= 1)
+	    v.push_back(std::make_pair(p.energy_dep, p.reco_energy));
+	}
       }
     }
     this->add_vars(v);
@@ -264,14 +316,68 @@ public:
   }
 };
 
+class PurityEfficiencyMajorParticle : public Analyzer<double>
+{
+private:
+  std::string target;
+  uint16_t pid;
+  bool do_purity;
+public:
+  PurityEfficiencyMajorParticle(std::string n, std::string t, uint16_t p, bool pur)
+  { name = n; target = t; pid = p; do_purity = pur; };
+  void operator()(const Event& evt)
+  {
+    std::vector<double> v;
+
+    uint32_t largest_match(0);
+    uint16_t largest_interaction_id;
+    for(const Interaction& I : evt.reco_interactions)
+    {
+      if(I.voxels >= largest_match)
+      {
+	largest_match = I.voxels;
+	largest_interaction_id = I.interaction_index;
+      }
+    }	
+    for(const IMatch& m : (do_purity ? evt.matches_ptt : evt.matches_ttp))
+    {
+      if(m.to_index != -1)
+      {
+	size_t nu_index(0);//evt.interaction_map.at(do_purity ? m.to_index : m.from_index)->nu_index);
+	if(nu_index < evt.neutrinos.size() && match_strings(m.from_primaries, target)  && (do_purity ? m.from_index : m.to_index) == largest_interaction_id)
+	{
+	  if(match_strings(m.to_primaries, target)) v.push_back(1);
+	  else v.push_back(0);
+	  if(pid == 6) v.push_back(evt.neutrinos.at(nu_index).momentum);
+	  else
+	  {
+	    auto highest(0);
+	    try{
+	      for(const Particle& p : evt.interaction_map.at(do_purity ? m.to_index : m.from_index)->particles)
+		if(p.pid == pid && p.energy_dep > highest) highest = p.energy_dep;
+	      v.push_back(highest);
+	    }
+	    catch (const std::exception&)
+	    {
+	      std::cerr << evt.image_index << ", " << m.to_index << std::endl;
+	    }
+	  }
+	}
+      }
+    }
+    this->add_vars(v);
+  }
+};
+
 class PurityEfficiency : public Analyzer<double>
 {
 private:
   std::string target;
   bool do_purity;
+  bool proton_energy;
 public:
-  PurityEfficiency(std::string n, std::string t, bool purity=true)
-  { name = n; target = t; do_purity = purity; };
+  PurityEfficiency(std::string n, std::string t, bool purity=true, bool prot=false)
+  { name = n; target = t; do_purity = purity; proton_energy = prot; };
   void operator()(const Event& evt)
   {
     std::vector<double> v(3, 0);
@@ -280,7 +386,42 @@ public:
       if(match_strings(m.from_primaries, target))
       {
 	v[0]++;
-	if(match_strings(m.to_primaries, target)) v[1]++;
+	if(proton_energy)
+	{
+	  //v[2] = evt.image_index;
+	  v[2] = 1;
+	  for(const Particle& p : evt.interaction_map.at(do_purity ? m.to_index : m.from_index)->particles)
+	  {
+	    if(p.primary && p.pid == 4)
+	      v[2] = (v[2] && p.momentum > 40.);
+	  }
+	}
+	if(match_strings(m.to_primaries, target))
+	  v[1]++;
+      }
+    }
+    if(!proton_energy) v[2] = evt.neutrinos.at(0).momentum;
+    this->add_vars(v);
+  }
+};
+
+class ParticlePurityEfficiency : public Analyzer<double>
+{
+private:
+  uint16_t target;
+  bool do_purity;
+public:
+  ParticlePurityEfficiency(std::string n, uint16_t t, bool purity=true)
+  { name = n; target = t; do_purity = purity; };
+  void operator()(const Event& evt)
+  {
+    std::vector<double> v(3, 0);
+    for(const PMatch& m : (do_purity ? evt.pmatches_ptt : evt.pmatches_ttp))
+    {
+      if(m.from_pid == target)
+      {
+	v[0]++;
+	if(m.to_pid == target) v[1]++;
       }
     }
     v[2] = evt.neutrinos.at(0).momentum;

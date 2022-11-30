@@ -8,6 +8,7 @@ class PMatch
   PMatch(const CSVRow& row);
   PMatch();
   int32_t image_index;
+  int16_t volume;
   int16_t from_index;
   int16_t from_pid;
   bool from_primary;

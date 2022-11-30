@@ -5,15 +5,17 @@
 
 IMatch::IMatch(const CSVRow& row)
 : image_index(std::stoi(row[0])),
-  from_index(std::stoi(row[5])),
-  to_index(std::stoi(row[6])),
-  from_primaries(row[2]),
-  from_particles(row[1]),
-  to_primaries(row[4]),
-  to_particles(row[3]) { }
+  volume(std::stoi(row[1])),
+  from_index(std::stoi(row[6])),
+  to_index(std::stoi(row[7])),
+  from_primaries(row[3]),
+  from_particles(row[2]),
+  to_primaries(row[5]),
+  to_particles(row[4]) { }
 
 IMatch::IMatch()
 : image_index(-1),
+  volume(-1),
   from_index(-1),
   to_index(-1),
   from_primaries("None"),

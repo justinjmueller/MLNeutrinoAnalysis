@@ -30,8 +30,8 @@ void read_all_events(std::map<int32_t, Event>& events, std::string sub);
 int main()
 {
   std::string base("bnb_numu");
-  std::string sub("");
-  //std::string sub("_sep19");
+  //std::string sub("");
+  std::string sub("_nov21");
   
   std::map<int32_t, Event> events;
   read_all_events(events, sub);
@@ -49,10 +49,22 @@ int main()
   std::vector<string_pair_ptr> string_pair_ana;
   ana.push_back(ptr(new PurityEfficiency("purity_1mu1p", "0ph0e1mu0pi1p", true)));
   ana.push_back(ptr(new PurityEfficiency("efficiency_1mu1p", "0ph0e1mu0pi1p", false)));
+  ana.push_back(ptr(new PurityEfficiency("purity_1mu1p_prot", "0ph0e1mu0pi1p", true, true)));
+  ana.push_back(ptr(new PurityEfficiency("efficiency_1mu1p_prot", "0ph0e1mu0pi1p", false, true)));
   ana.push_back(ptr(new PurityEfficiency("purity_numucc", "*ph*e1mu*pi*p", true)));
   ana.push_back(ptr(new PurityEfficiency("efficiency_numucc", "*ph*e1mu*pi*p", false)));
   ana.push_back(ptr(new PurityEfficiency("purity_2ph1mu", "2ph0e1mu0pi0p", true)));
   ana.push_back(ptr(new PurityEfficiency("efficiency_2ph1mu", "2ph0e1mu0pi0p", false)));
+  ana.push_back(ptr(new ParticlePurityEfficiency("purity_photon", 0, true)));
+  ana.push_back(ptr(new ParticlePurityEfficiency("purity_electron", 1, true)));
+  ana.push_back(ptr(new ParticlePurityEfficiency("purity_muon", 2, true)));
+  ana.push_back(ptr(new ParticlePurityEfficiency("purity_pion", 3, true)));
+  ana.push_back(ptr(new ParticlePurityEfficiency("purity_proton", 4, true)));
+  ana.push_back(ptr(new ParticlePurityEfficiency("efficiency_photon", 0, false)));
+  ana.push_back(ptr(new ParticlePurityEfficiency("efficiency_electron", 1, false)));
+  ana.push_back(ptr(new ParticlePurityEfficiency("efficiency_muon", 2, false)));
+  ana.push_back(ptr(new ParticlePurityEfficiency("efficiency_pion", 3, false)));
+  ana.push_back(ptr(new ParticlePurityEfficiency("efficiency_proton", 4, false)));
   ana.push_back(ptr(new Unmatched("unmatched_ptt")));
   ana.push_back(ptr(new SplitInteraction("split_ptt")));
   ana.push_back(ptr(new DirectionResolution("muon_direction", 2)));
@@ -67,9 +79,22 @@ int main()
   ana.push_back(ptr(new ParticleMultiplicity("proton_multiplicity", 4)));
   ana.push_back(ptr(new NeutrinoMomentum("neutrino_momentum")));
   ana.push_back(ptr(new VertexResolution("vertex_resolution")));
+  ana.push_back(ptr(new PurityEfficiencyMajorParticle("efficiency_1mu1p_mneutrino", "0ph0e1mu0pi1p", 6, false)));
+  ana.push_back(ptr(new PurityEfficiencyMajorParticle("efficiency_1mu1p_mproton", "0ph0e1mu0pi1p", 4, false)));
+  ana.push_back(ptr(new PurityEfficiencyMajorParticle("efficiency_1mu1p_mmuon", "0ph0e1mu0pi1p", 2, false)));
+  ana.push_back(ptr(new PurityEfficiencyMajorParticle("purity_1mu1p_mneutrino", "0ph0e1mu0pi1p", 6, true)));
+  ana.push_back(ptr(new PurityEfficiencyMajorParticle("purity_1mu1p_mproton", "0ph0e1mu0pi1p", 4, true)));
+  ana.push_back(ptr(new PurityEfficiencyMajorParticle("purity_1mu1p_mmuon", "0ph0e1mu0pi1p", 2, true)));
+  ana.push_back(ptr(new PurityEfficiencyMajorParticle("efficiency_numucc_mneutrino", "*ph*e1mu*pi*p", 6, false)));
+  ana.push_back(ptr(new PurityEfficiencyMajorParticle("efficiency_numucc_mmuon", "*ph*e1mu*pi*p", 2, false)));
+  ana.push_back(ptr(new PurityEfficiencyMajorParticle("purity_numucc_mneutrino", "*ph*e1mu*pi*p", 6, true)));
+  ana.push_back(ptr(new PurityEfficiencyMajorParticle("purity_numucc_mmuon", "*ph*e1mu*pi*p", 2, true)));
+  ana.push_back(ptr(new SoftmaxPID("softmax_muon", 2, 3)));
   string_pair_ana.push_back(string_pair_ptr(new Confusion("confusion_1mu1p", "0ph0e1mu0pi1p")));
   string_pair_ana.push_back(string_pair_ptr(new Confusion("confusion_2ph1mu", "2ph0e1mu0pi0p")));
   pair_ana.push_back(pair_ptr(new ParticleEnergy("muon_energy", 2)));
+  pair_ana.push_back(pair_ptr(new ParticleEnergy("muon_energy_reco", 2, true)));
+  pair_ana.push_back(pair_ptr(new ParticleEnergy("muon_energy_recoall", 2, true, true)));
   pair_ana.push_back(pair_ptr(new ParticleEnergy("pion_energy", 3)));
   pair_ana.push_back(pair_ptr(new ParticleEnergy("proton_energy", 4)));
   pair_ana.push_back(pair_ptr(new VisEnergy("vis_energy_1mu1p", "0ph0e1mu0pi1p")));
@@ -78,18 +103,20 @@ int main()
   pair_ana.push_back(pair_ptr(new VisEnergy("vis_energy_numucc", "*ph*e1mu*pi*p")));
   pair_ana.push_back(pair_ptr(new VisEnergyToFull("vis_energy_full_numucc", "*ph*e1mu*pi*p", true)));
   pair_ana.push_back(pair_ptr(new VisEnergyToFull("reco_vis_energy_full_numucc", "*ph*e1mu*pi*p", false)));
-  pair_ana.push_back(pair_ptr(new ParticleConfusion("confusion_particle")));
-  pair_ana.push_back(pair_ptr(new PrimaryConfusion("confusion_primary")));
+  pair_ana.push_back(pair_ptr(new ParticleConfusion("confusion_particle", false)));
+  pair_ana.push_back(pair_ptr(new ParticleConfusion("confusion_particle_primary", true)));
+  pair_ana.push_back(pair_ptr(new ParticleConfusion("confusion_particle_noneutron", false, true)));
+  
   
   for(auto& obj : events)
   { 
     evt = &(obj.second);
-    event_tree.Fill();
+    //event_tree.Fill();
     for(auto& a : ana) (*a)(obj.second);
     for(auto& a : string_pair_ana) (*a)(obj.second);
     for(auto& a : pair_ana) (*a)(obj.second);
   }
-  event_tree.Write();
+  //event_tree.Write();
 
   for(auto& a: ana) output.WriteObject(&a->get_vars(), a->get_name().c_str());
   for(auto& a: string_pair_ana) output.WriteObject(&a->get_vars(), a->get_name().c_str());
@@ -114,7 +141,9 @@ void read_csv(std::string csv, std::string sub, std::vector<T>& obj_vector)
       }
       catch(const std::invalid_argument& e)
       {
-	std::cerr << "Invalid row detected at line "
+	std::cerr << "Invalid row detected in file "
+		  << csv
+		  << " at line "
 		  << count
 		  << " : "
 		  << e.what()
@@ -218,7 +247,8 @@ void read_all_events(std::map<int32_t, Event>& events, std::string sub)
   
   for(auto& evt : events)
   {
-    for(Interaction& I : evt.second.interactions) I.update_particles(VTX_THRESHOLD);
+    evt.second.generate_pointers();
+    //for(Interaction& I : evt.second.interactions) I.update_particles(VTX_THRESHOLD);
     for(Interaction& I : evt.second.reco_interactions) I.update_particles(VTX_THRESHOLD);
     for(IMatch& m : evt.second.matches_ptt)
     {

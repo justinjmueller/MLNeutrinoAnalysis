@@ -11,6 +11,7 @@ class IMatch
   IMatch();
   void update(const Interaction& from_int, const Interaction& to_int);
   int32_t image_index;
+  int16_t volume;
   int16_t from_index;
   int16_t to_index;
   std::string from_primaries;

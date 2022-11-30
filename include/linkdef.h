@@ -1,5 +1,6 @@
 #ifdef __CLING__
 #include <vector>
+#include <map>
 #include <string>
 #pragma link off all globals;
 #pragma link off all classes;
@@ -12,4 +13,6 @@
 #pragma link C++ class Interaction+;
 #pragma link C++ class Particle+;
 #pragma link C++ class vector<pair<string, string> >+;
+#pragma link C++ class map<uint16_t, Interaction*>+;
+#pragma link C++ class map<pair<uint16_t, uint16_t>, Particle*>+;
 #endif

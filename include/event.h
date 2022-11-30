@@ -2,6 +2,7 @@
 #define EVENT_H
 
 #include <vector>
+#include <map>
 #include "neutrino.h"
 #include "interaction.h"
 #include "pmatch.h"
@@ -17,6 +18,7 @@ class Event
   void add_reco_interaction(const Interaction& in);
   void add_match(const IMatch& ma, bool ptt);
   void add_pmatch(const PMatch& ma, bool ptt);
+  void generate_pointers();
   int32_t image_index;
   std::vector<Neutrino> neutrinos;
   std::vector<Interaction> interactions;
@@ -25,5 +27,11 @@ class Event
   std::vector<IMatch> matches_ttp;
   std::vector<PMatch> pmatches_ptt;
   std::vector<PMatch> pmatches_ttp;
+  std::map<uint16_t, Interaction*> interaction_map;
+  std::map<uint16_t, Interaction*> reco_interaction_map;
+  std::map<uint16_t, Particle*> particle_map;
+  std::map<uint16_t, Particle*> reco_particle_map;
+  //std::map<std::pair<uint16_t, uint16_t>, Particle*> particle_map;
+  //std::map<std::pair<uint16_t, uint16_t>, Particle*> reco_particle_map;
 };
 #endif

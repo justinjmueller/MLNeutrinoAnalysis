@@ -15,5 +15,10 @@ class Neutrino
   double px;
   double py;
   double pz;
+  double x;
+  double y;
+  double z;
+  double t;
+  size_t interaction_index;
 };
 #endif
