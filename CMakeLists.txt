@@ -20,6 +20,6 @@ set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
 add_executable(NuAnalysis analysis.cpp ${sources} ${headers})
 target_link_libraries(NuAnalysis ${ROOT_LIBRARIES})
-root_generate_dictionary(obj_dict event.h neutrino.h pmatch.h imatch.h interaction.h particle.h MODULE NuAnalysis LINKDEF include/linkdef.h)
-add_library(Event SHARED src/event.cpp src/neutrino.cpp src/pmatch.cpp src/imatch.cpp src/interaction.cpp src/particle.cpp src/csv_parser.cpp src/utilities.cpp obj_dict)
+root_generate_dictionary(obj_dict event.h neutrino.h imatch.h pmatch.h interaction.h particle.h crthit.h MODULE NuAnalysis LINKDEF include/linkdef.h)
+add_library(Event SHARED src/event.cpp src/neutrino.cpp src/pmatch.cpp src/imatch.cpp src/interaction.cpp src/particle.cpp src/crthit.cpp src/csv_parser.cpp src/utilities.cpp obj_dict)
 target_link_libraries(Event ${ROOT_LIBRARIES})
