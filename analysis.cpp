@@ -47,7 +47,7 @@ int main()
   std::vector<ptr> ana;
   std::vector<pair_ptr> pair_ana;
   std::vector<string_pair_ptr> string_pair_ana;
-  ana.push_back(ptr(new PurityEfficiency("purity_1mu1p", "0ph0e1mu0pi1p", true)));
+  /*ana.push_back(ptr(new PurityEfficiency("purity_1mu1p", "0ph0e1mu0pi1p", true)));
   ana.push_back(ptr(new PurityEfficiency("efficiency_1mu1p", "0ph0e1mu0pi1p", false)));
   ana.push_back(ptr(new PurityEfficiency("purity_1mu1p_prot", "0ph0e1mu0pi1p", true, true)));
   ana.push_back(ptr(new PurityEfficiency("efficiency_1mu1p_prot", "0ph0e1mu0pi1p", false, true)));
@@ -64,7 +64,7 @@ int main()
   ana.push_back(ptr(new ParticlePurityEfficiency("efficiency_electron", 1, false)));
   ana.push_back(ptr(new ParticlePurityEfficiency("efficiency_muon", 2, false)));
   ana.push_back(ptr(new ParticlePurityEfficiency("efficiency_pion", 3, false)));
-  ana.push_back(ptr(new ParticlePurityEfficiency("efficiency_proton", 4, false)));
+  ana.push_back(ptr(new ParticlePurityEfficiency("efficiency_proton", 4, false)));*/
   ana.push_back(ptr(new Unmatched("unmatched_ptt")));
   ana.push_back(ptr(new SplitInteraction("split_ptt")));
   ana.push_back(ptr(new DirectionResolution("muon_direction", 2)));
@@ -111,12 +111,12 @@ int main()
   for(auto& obj : events)
   { 
     evt = &(obj.second);
-    //event_tree.Fill();
+    event_tree.Fill();
     for(auto& a : ana) (*a)(obj.second);
     for(auto& a : string_pair_ana) (*a)(obj.second);
     for(auto& a : pair_ana) (*a)(obj.second);
   }
-  //event_tree.Write();
+  event_tree.Write();
 
   for(auto& a: ana) output.WriteObject(&a->get_vars(), a->get_name().c_str());
   for(auto& a: string_pair_ana) output.WriteObject(&a->get_vars(), a->get_name().c_str());

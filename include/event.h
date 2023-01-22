@@ -27,11 +27,9 @@ class Event
   std::vector<IMatch> matches_ttp;
   std::vector<PMatch> pmatches_ptt;
   std::vector<PMatch> pmatches_ttp;
-  std::map<uint16_t, Interaction*> interaction_map;
-  std::map<uint16_t, Interaction*> reco_interaction_map;
-  std::map<uint16_t, Particle*> particle_map;
-  std::map<uint16_t, Particle*> reco_particle_map;
-  //std::map<std::pair<uint16_t, uint16_t>, Particle*> particle_map;
-  //std::map<std::pair<uint16_t, uint16_t>, Particle*> reco_particle_map;
+  std::map<uint16_t, size_t> interaction_map;
+  std::map<uint16_t, size_t> reco_interaction_map;
+  std::map<uint16_t, std::pair<size_t, size_t>> particle_map;
+  std::map<uint16_t, std::pair<size_t, size_t>> reco_particle_map;
 };
 #endif

@@ -85,10 +85,20 @@ void parse_particle_string(std::string s, std::vector<uint16_t>& counts)
   {
     pos = s.find(types[t], prv);
     auto sub = s.substr(prv, pos-prv);
+    try
+    {
     if(sub != "*")
       counts.at(t) = std::stoi(sub);
     else
       counts.at(t) = 999;
+    }
+    catch (const std::exception&)
+    {
+      std::cerr << "std::stoi called with argument: " << sub << std::endl;
+      std::cerr << pos << ", " << prv << ", " << s.size() << std::endl;
+      std::cerr << "string requested is: " << s << std::endl;
+      throw;
+    }
     prv = pos + types[t].length();
   }
 }

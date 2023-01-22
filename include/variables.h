@@ -8,6 +8,54 @@
 #define PION_MASS 139.57039
 #define PROTON_MASS 938.2720813
 
+class PurityEfficiencyMajorParticle : public Analyzer<double>
+{
+private:
+  std::string target;
+  uint16_t pid;
+  bool do_purity;
+public:
+  PurityEfficiencyMajorParticle(std::string n, std::string t, uint16_t p, bool pur)
+  { name = n; target = t; pid = p; do_purity = pur; };
+  void operator()(const Event& evt)
+  {
+    std::vector<double> v;
+    size_t tt, pp;
+    for(const IMatch& m : (do_purity ? evt.matches_ptt : evt.matches_ttp))
+    {
+      try
+      {
+	if(m.to_index != -1)
+	{
+	  tt = evt.interaction_map.at(do_purity ? m.to_index : m.from_index);
+	  pp = evt.reco_interaction_map.at(do_purity ? m.from_index : m.to_index);
+	  bool signal_true = (evt.interactions.at(tt).nu_id == 1 && match_strings(evt.interactions.at(tt).primary_string, target));
+	  bool signal_pred = (match_strings(evt.reco_interactions.at(pp).primary_string, target));// && evt.reco_interactions.at(pp).contained);
+	  if(do_purity ? signal_pred : signal_true)
+	  {
+	    if(do_purity ? signal_true : signal_pred) v.push_back(1);
+	    else v.push_back(0);
+	    if(pid == 6) v.push_back(evt.neutrinos.at(evt.interactions.at(tt).nu_index).momentum);
+	    else
+	    {
+	      auto highest(0);
+	      for(const Particle& p : evt.interactions.at(tt).particles)
+		if(p.pid == pid && p.energy_dep > highest) highest = p.energy_dep;
+	      v.push_back(highest);
+	    }
+	  }
+	}
+      }
+      catch (const std::exception&)
+      {
+	std::cerr << "Image: " << evt.image_index
+                  << ", Particle ID: " << m.to_index << std::endl;
+      }
+    }
+    this->add_vars(v);
+  }
+};
+
 class SoftmaxPID : public Analyzer<double>
 {
   uint16_t from_pid, to_pid;
@@ -23,9 +71,11 @@ public:
       {
 	if(m.to_index != -1 && m.from_pid == from_pid && m.to_pid >= 2 && m.from_primary)
 	{
-	  v.push_back(evt.reco_particle_map.at(m.to_index)->pid);
-	  v.push_back(evt.reco_particle_map.at(m.to_index)->softmax_muon);
-	  v.push_back(evt.reco_particle_map.at(m.to_index)->softmax_pion);
+	  const std::pair<size_t, size_t>& to = evt.reco_particle_map.at(m.to_index);
+	  const Particle& p = evt.reco_interactions.at(to.first).particles.at(to.second);
+	  v.push_back(p.pid);
+	  v.push_back(p.softmax_muon);
+	  v.push_back(p.softmax_pion);
 	}
       }
       catch (const std::exception&)
@@ -68,9 +118,11 @@ public:
     {
       try
       {
-	if((!primary_only || m.to_primary) &&
-	   (!no_neutron_ancestor || (m.to_pid >= 2 && evt.particle_map.at(m.to_index)->neutron_ancestor)))
-	  v.push_back(std::make_pair(m.to_pid + 5*m.to_primary, m.from_pid + 5*m.from_primary));
+	if(m.to_index != -1)
+	{
+	  if(!primary_only || m.to_primary)
+	    v.push_back(std::make_pair(m.to_pid + 5*m.to_primary, m.from_pid + 5*m.from_primary));
+	}
       }
       catch (const std::exception&)
       {
@@ -211,10 +263,12 @@ public:
 	{
 	  try
 	  {
-	    Particle *p = evt.particle_map.at(m.to_index);
-	    Particle *q = evt.reco_particle_map.at(m.from_index);
-	    if(p->contained && p->nchildren <= 1)
-	      v.push_back(std::make_pair(p->energy_dep, q->reco_energy));
+	    const std::pair<size_t, size_t>& to = evt.particle_map.at(m.to_index);
+	    const Particle& p = evt.interactions.at(to.first).particles.at(to.second);
+	    const std::pair<size_t, size_t>& from = evt.reco_particle_map.at(m.from_index);
+	    const Particle& q = evt.reco_interactions.at(from.first).particles.at(from.second);
+	    if(p.contained && p.nchildren <= 1)
+	      v.push_back(std::make_pair(p.energy_dep, q.reco_energy));
 	  }
 	  catch (const std::exception&)
 	  {
@@ -316,60 +370,7 @@ public:
   }
 };
 
-class PurityEfficiencyMajorParticle : public Analyzer<double>
-{
-private:
-  std::string target;
-  uint16_t pid;
-  bool do_purity;
-public:
-  PurityEfficiencyMajorParticle(std::string n, std::string t, uint16_t p, bool pur)
-  { name = n; target = t; pid = p; do_purity = pur; };
-  void operator()(const Event& evt)
-  {
-    std::vector<double> v;
-
-    uint32_t largest_match(0);
-    uint16_t largest_interaction_id;
-    for(const Interaction& I : evt.reco_interactions)
-    {
-      if(I.voxels >= largest_match)
-      {
-	largest_match = I.voxels;
-	largest_interaction_id = I.interaction_index;
-      }
-    }	
-    for(const IMatch& m : (do_purity ? evt.matches_ptt : evt.matches_ttp))
-    {
-      if(m.to_index != -1)
-      {
-	size_t nu_index(0);//evt.interaction_map.at(do_purity ? m.to_index : m.from_index)->nu_index);
-	if(nu_index < evt.neutrinos.size() && match_strings(m.from_primaries, target)  && (do_purity ? m.from_index : m.to_index) == largest_interaction_id)
-	{
-	  if(match_strings(m.to_primaries, target)) v.push_back(1);
-	  else v.push_back(0);
-	  if(pid == 6) v.push_back(evt.neutrinos.at(nu_index).momentum);
-	  else
-	  {
-	    auto highest(0);
-	    try{
-	      for(const Particle& p : evt.interaction_map.at(do_purity ? m.to_index : m.from_index)->particles)
-		if(p.pid == pid && p.energy_dep > highest) highest = p.energy_dep;
-	      v.push_back(highest);
-	    }
-	    catch (const std::exception&)
-	    {
-	      std::cerr << evt.image_index << ", " << m.to_index << std::endl;
-	    }
-	  }
-	}
-      }
-    }
-    this->add_vars(v);
-  }
-};
-
-class PurityEfficiency : public Analyzer<double>
+/*class PurityEfficiency : public Analyzer<double>
 {
 private:
   std::string target;
@@ -427,7 +428,7 @@ public:
     v[2] = evt.neutrinos.at(0).momentum;
     this->add_vars(v);
   }
-};
+  };*/
 
 class DirectionResolution : public Analyzer<double>
 {
@@ -522,7 +523,6 @@ public:
 		       + nu.py * recop.at(1)
 		       + nu.pz * recop.at(2));
       cosine /= (nu.momentum * mag);
-      //if(p.reco_dir_z < 0) cosine = -1*cosine;
       v.push_back(acos(cosine) * (180/3.14159265));
     }
     this->add_vars(v);
