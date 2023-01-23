@@ -11,6 +11,7 @@
 
 Event::Event()
   : image_index(-1),
+    triggering_volume(0),
     neutrinos(std::vector<Neutrino>()),
     interactions(std::vector<Interaction>()),
     reco_interactions(std::vector<Interaction>()),
@@ -23,7 +24,18 @@ Event::Event()
     interaction_map(std::map<uint16_t, size_t>()),
     reco_interaction_map(std::map<uint16_t, size_t>()),
     particle_map(std::map<uint16_t, std::pair<size_t, size_t>>()),
-    reco_particle_map(std::map<uint16_t, std::pair<size_t, size_t>>()) { }
+    reco_particle_map(std::map<uint16_t, std::pair<size_t, size_t>>())
+    {
+      double min_time(99999);
+      for(const Interaction& I : interactions)
+      {
+        if(std::abs(I.t0) < min_time)
+        {
+          min_time = std::abs(I.t0);
+          triggering_volume = I.volume;
+        }
+      }
+    }
 
 void Event::add_neutrino(const Neutrino& nu)
 {

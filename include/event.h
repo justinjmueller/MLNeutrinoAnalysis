@@ -24,6 +24,7 @@ class Event
   void add_fmatch(const FMatch& f);
   void generate_pointers();
   int32_t image_index;
+  int16_t triggering_volume;
   std::vector<Neutrino> neutrinos;
   std::vector<Interaction> interactions;
   std::vector<Interaction> reco_interactions;
