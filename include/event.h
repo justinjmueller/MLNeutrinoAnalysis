@@ -8,6 +8,7 @@
 #include "imatch.h"
 #include "pmatch.h"
 #include "crthit.h"
+#include "fmatch.h"
 #include "csv_parser.h"
 
 class Event
@@ -20,6 +21,7 @@ class Event
   void add_match(const IMatch& ma, bool ptt);
   void add_pmatch(const PMatch& ma, bool ptt);
   void add_crthit(const CRTHit& c);
+  void add_fmatch(const FMatch& f);
   void generate_pointers();
   int32_t image_index;
   std::vector<Neutrino> neutrinos;
@@ -30,6 +32,7 @@ class Event
   std::vector<PMatch> pmatches_ptt;
   std::vector<PMatch> pmatches_ttp;
   std::vector<CRTHit> crthits;
+  std::vector<FMatch> fmatches;
   std::map<uint16_t, size_t> interaction_map;
   std::map<uint16_t, size_t> reco_interaction_map;
   std::map<uint16_t, std::pair<size_t, size_t>> particle_map;

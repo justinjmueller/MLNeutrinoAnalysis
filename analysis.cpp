@@ -12,6 +12,7 @@
 #include "pmatch.h"
 #include "imatch.h"
 #include "crthit.h"
+#include "fmatch.h"
 #include "event.h"
 #include "analyzer.h"
 #include "variables.h"
@@ -178,6 +179,8 @@ void read_all_events(std::map<int32_t, Event>& events, std::string sub)
   read_csv("../csv/pmatch_ttp", sub, pmatches_ttp);
   std::vector<CRTHit> crthits;
   read_csv("../csv/crthit", sub, crthits);
+  std::vector<FMatch> fmatches;
+  read_csv("../csv/fmatch", sub, fmatches);
 
   for(Neutrino& nu : neutrinos)
   {
@@ -251,6 +254,11 @@ void read_all_events(std::map<int32_t, Event>& events, std::string sub)
   {
     if(events.find(c.image_index) != events.end()) events.at(c.image_index).add_crthit(c);
     else std::cerr << "CRTHit found without corresponding event!" << std::endl;
+  }
+  for(FMatch& f : fmatches)
+  {
+    if(events.find(f.image_index) != events.end()) events.at(f.image_index).add_fmatch(f);
+    else std::cerr << "FMatch found without corresponding event!" << std::endl;
   }
   
   for(auto& evt : events)

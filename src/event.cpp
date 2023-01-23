@@ -6,6 +6,7 @@
 #include "pmatch.h"
 #include "imatch.h"
 #include "crthit.h"
+#include "fmatch.h"
 #include "event.h"
 
 Event::Event()
@@ -18,6 +19,7 @@ Event::Event()
     pmatches_ptt(std::vector<PMatch>()),
     pmatches_ttp(std::vector<PMatch>()),
     crthits(std::vector<CRTHit>()),
+    fmatches(std::vector<FMatch>()),
     interaction_map(std::map<uint16_t, size_t>()),
     reco_interaction_map(std::map<uint16_t, size_t>()),
     particle_map(std::map<uint16_t, std::pair<size_t, size_t>>()),
@@ -56,6 +58,11 @@ void Event::add_pmatch(const PMatch& ma, bool ptt=true)
 void Event::add_crthit(const CRTHit& c)
 {
   crthits.push_back(c);
+}
+
+void Event::add_fmatch(const FMatch& f)
+{
+  fmatches.push_back(f);
 }
 
 void Event::generate_pointers()
