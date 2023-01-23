@@ -20,11 +20,11 @@ Interaction::Interaction(const CSVRow& row)
     particle_multiplicity(std::vector<uint16_t>(5,0)),
     primary_multiplicity(std::vector<uint16_t>(5,0)),
     michel_present(row[6] == "True"),
-    t0(0),
+    t0(std::stod(row[8])),
+    nu_index(std::stoi(row[9])),
     contained(true),
     vis_energy(0),
     reco_vis_energy(0),
-    nu_index(9999),
     voxels(0)
 {
   std::string vertex(row[7]);
@@ -51,10 +51,10 @@ Interaction::Interaction()
     vertex_y(-1),
     vertex_z(-1),
     t0(0),
+    nu_index(-1),
     contained(true),
     vis_energy(0),
     reco_vis_energy(0),
-    nu_index(9999),
     voxels(0) { }
 
 void Interaction::add_particle(const Particle& p)
@@ -63,8 +63,6 @@ void Interaction::add_particle(const Particle& p)
   particles.back().parent_primaries = this->primary_string;
   particles.back().parent_particles = this->particle_string;
   contained = (contained && p.contained);
-  if(p.primary)
-    t0 = (t0*(particles.size()-1) + p.t) / particles.size();
   if(p.pid == 2)
   {
     vis_energy += (MUON_MASS + p.energy_dep);
@@ -81,63 +79,4 @@ void Interaction::add_particle(const Particle& p)
     reco_vis_energy += p.reco_energy;
   }
   voxels += p.voxels;
-}
-
-void Interaction::update_particles(double thr)
-{
-  /*if(particles.size() > 0)
-  {
-    //bool condition;
-    //for(auto& p : particles)
-    //{
-      condition = (p.primary || p.primary_heuristic);
-      if(condition && !p.primary)
-      {
-	p.primary = true;
-	primary_multiplicity.at(p.pid)++;
-	std::cout << "updated primary id" << std::endl;
-	}*/
-      /*if(p.primary_heuristic && !p.primary)
-      {
-	p.primary = true;
-	primary_multiplicity.at(p.pid)++;
-      }
-      else if(p.primary_heuristic && p.primary)
-      {
-	p.primary = false;
-	primary_multiplicity.at(p.pid)--;
-      }
-      }*/
-  /*bool has_primary(false);
-    double longest(0);
-    size_t longest_p(0), current_index(0);
-    for(auto& p : particles)
-    {
-      has_primary = (has_primary || p.primary);
-      if(p.length > longest)
-      {
-	longest = p.length;
-	longest_p = current_index;
-      }
-      ++current_index;
-    }
-    if(!has_primary) particles.at(longest_p).primary = true;
-    
-    auto cluster = find_best_cluster(particles, thr);
-    for(size_t i(0); i < particles.size(); ++i)
-    {
-      if(cluster.at(i) && particles.at(i).primary)
-      {
-	for(size_t j(0); j < particles.size(); ++j)
-	{
-	  if(!particles.at(j).primary && cluster.at(j))
-	  {
-	    primary_multiplicity.at(particles.at(j).pid)++;
-	    particles.at(j).primary = true;
-	  }
-	}
-	break;
-      }
-    }
-  }*/
 }

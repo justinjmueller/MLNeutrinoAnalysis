@@ -9,13 +9,14 @@ CRTHit::CRTHit(const CSVRow& row)
     ts0_ns(std::stod(row[4])),
     ts0_ns_corr(std::stod(row[5])),
     ts1_ns(std::stod(row[6])),
-    tagger(row[7]),
-    xpos(std::stod(row[8])),
-    xerr(std::stod(row[9])),
-    ypos(std::stod(row[10])),
-    yerr(std::stod(row[11])),
-    zpos(std::stod(row[12])),
-    zerr(std::stod(row[13])) { }
+    plane(std::stoi(row[7])),
+    tagger(row[8]),
+    xpos(std::stod(row[9])),
+    xerr(std::stod(row[10])),
+    ypos(std::stod(row[11])),
+    yerr(std::stod(row[12])),
+    zpos(std::stod(row[13])),
+    zerr(std::stod(row[14])) { }
 
 CRTHit::CRTHit()
   : image_index(-1),
@@ -25,6 +26,7 @@ CRTHit::CRTHit()
     ts0_ns(-1),
     ts0_ns_corr(-1),
     ts1_ns(-1),
+    plane(-1),
     tagger("None"),
     xpos(-1),
     xerr(-1),

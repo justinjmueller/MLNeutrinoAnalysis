@@ -35,15 +35,12 @@ public:
   double reco_dir_x;
   double reco_dir_y;
   double reco_dir_z;
-  bool p0_localQ_lowest;
-  double expa;
-  double expb;
   double vtx0x, vtx0y, vtx0z;
   double vtx1x, vtx1y, vtx1z;
+  int32_t parent_pdg;
+  int16_t parent_tid;
   std::string parent_primaries;
   std::string parent_particles;
-  bool neutron_ancestor;
-  bool primary_heuristic;
   double softmax_nonprimary;
   double softmax_primary;
   double softmax_photon;

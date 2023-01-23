@@ -12,7 +12,6 @@ class Interaction
   Interaction(const CSVRow& row);
   Interaction();
   void add_particle(const Particle& p);
-  void update_particles(double thr);
   int32_t image_index;
   int16_t volume;
   int16_t interaction_index;
@@ -25,12 +24,12 @@ class Interaction
   double vertex_x;
   double vertex_y;
   double vertex_z;
-  float t0;
+  double t0;
+  size_t nu_index;
   bool contained;
   double vis_energy;
   double reco_vis_energy;
   std::vector<Particle> particles;
-  size_t nu_index;
   uint32_t voxels;
 };
 #endif

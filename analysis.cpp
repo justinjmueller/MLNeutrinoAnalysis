@@ -33,7 +33,7 @@ int main()
 {
   std::string base("bnb_numu");
   //std::string sub("");
-  std::string sub("_nov21");
+  std::string sub("");
   
   std::map<int32_t, Event> events;
   read_all_events(events, sub);
@@ -66,7 +66,7 @@ int main()
   ana.push_back(ptr(new ParticlePurityEfficiency("efficiency_electron", 1, false)));
   ana.push_back(ptr(new ParticlePurityEfficiency("efficiency_muon", 2, false)));
   ana.push_back(ptr(new ParticlePurityEfficiency("efficiency_pion", 3, false)));
-  ana.push_back(ptr(new ParticlePurityEfficiency("efficiency_proton", 4, false)));*/
+  ana.push_back(ptr(new ParticlePurityEfficiency("efficiency_proton", 4, false)));
   ana.push_back(ptr(new Unmatched("unmatched_ptt")));
   ana.push_back(ptr(new SplitInteraction("split_ptt")));
   ana.push_back(ptr(new DirectionResolution("muon_direction", 2)));
@@ -108,21 +108,21 @@ int main()
   pair_ana.push_back(pair_ptr(new ParticleConfusion("confusion_particle", false)));
   pair_ana.push_back(pair_ptr(new ParticleConfusion("confusion_particle_primary", true)));
   pair_ana.push_back(pair_ptr(new ParticleConfusion("confusion_particle_noneutron", false, true)));
-  
+  */
   
   for(auto& obj : events)
   { 
     evt = &(obj.second);
     event_tree.Fill();
-    for(auto& a : ana) (*a)(obj.second);
-    for(auto& a : string_pair_ana) (*a)(obj.second);
-    for(auto& a : pair_ana) (*a)(obj.second);
+    //for(auto& a : ana) (*a)(obj.second);
+    //for(auto& a : string_pair_ana) (*a)(obj.second);
+    //for(auto& a : pair_ana) (*a)(obj.second);
   }
   event_tree.Write();
 
-  for(auto& a: ana) output.WriteObject(&a->get_vars(), a->get_name().c_str());
-  for(auto& a: string_pair_ana) output.WriteObject(&a->get_vars(), a->get_name().c_str());
-  for(auto& a: pair_ana) output.WriteObject(&a->get_vars(), a->get_name().c_str());
+  //for(auto& a: ana) output.WriteObject(&a->get_vars(), a->get_name().c_str());
+  //for(auto& a: string_pair_ana) output.WriteObject(&a->get_vars(), a->get_name().c_str());
+  //for(auto& a: pair_ana) output.WriteObject(&a->get_vars(), a->get_name().c_str());
   return 0;
 }
 
@@ -170,17 +170,17 @@ void read_all_events(std::map<int32_t, Event>& events, std::string sub)
   std::vector<Neutrino> neutrinos;
   read_csv("../csv/neutrinos", sub, neutrinos);
   std::vector<IMatch> matches_ptt;
-  read_csv("../csv/matched_ptt", sub, matches_ptt);
+  read_csv("../csv/imatches_ptt", sub, matches_ptt);
   std::vector<IMatch> matches_ttp;
-  read_csv("../csv/matched_ttp", sub, matches_ttp);
+  read_csv("../csv/imatches_ttp", sub, matches_ttp);
   std::vector<PMatch> pmatches_ptt;
-  read_csv("../csv/pmatch_ptt", sub, pmatches_ptt);
+  read_csv("../csv/pmatches_ptt", sub, pmatches_ptt);
   std::vector<PMatch> pmatches_ttp;
-  read_csv("../csv/pmatch_ttp", sub, pmatches_ttp);
+  read_csv("../csv/pmatches_ttp", sub, pmatches_ttp);
   std::vector<CRTHit> crthits;
-  read_csv("../csv/crthit", sub, crthits);
+  read_csv("../csv/crthits", sub, crthits);
   std::vector<FMatch> fmatches;
-  read_csv("../csv/fmatch", sub, fmatches);
+  read_csv("../csv/fmatches", sub, fmatches);
 
   for(Neutrino& nu : neutrinos)
   {
@@ -264,8 +264,6 @@ void read_all_events(std::map<int32_t, Event>& events, std::string sub)
   for(auto& evt : events)
   {
     evt.second.generate_pointers();
-    //for(Interaction& I : evt.second.interactions) I.update_particles(VTX_THRESHOLD);
-    for(Interaction& I : evt.second.reco_interactions) I.update_particles(VTX_THRESHOLD);
     for(IMatch& m : evt.second.matches_ptt)
     {
       auto ptt_res = find_match(m, evt.second.reco_interactions,

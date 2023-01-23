@@ -31,36 +31,60 @@ Particle::Particle(const CSVRow& row)
     theta(std::stod(row[23])),
     reco_theta(std::stod(row[24])),
     nchildren(std::stoi(row[26])),
-    p0_localQ_lowest(row[29] == "True"),
-    expa(std::stod(row[30])),
-    expb(std::stod(row[31])),
-  neutron_ancestor(row[34] == "True"),
-  primary_heuristic(row[36] == "True"),
-  softmax_nonprimary(std::stod(row[37])),
-  softmax_primary(std::stod(row[38])),
-  softmax_photon(std::stod(row[39])),
-  softmax_electron(std::stod(row[40])),
-  softmax_muon(std::stod(row[41])),
-  softmax_pion(std::stod(row[42])),
-  softmax_proton(std::stod(row[43]))
+    parent_pdg(std::stoi(row[31])),
+    parent_tid(std::stoi(row[32])),
+    softmax_nonprimary(std::stod(row[33])),
+    softmax_primary(std::stod(row[34])),
+    softmax_photon(std::stod(row[35])),
+    softmax_electron(std::stod(row[36])),
+    softmax_muon(std::stod(row[37])),
+    softmax_pion(std::stod(row[38])),
+    softmax_proton(std::stod(row[39]))
 {
   std::string dir(row[27]);
-  std::vector<std::string> sdir(split(dir.substr(1,dir.length()-2), ' '));
-  reco_dir_x = std::stod(sdir.at(0));
-  reco_dir_y = std::stod(sdir.at(1));
-  reco_dir_z = std::stod(sdir.at(2));
+  if(dir != "None")
+  {
+    std::vector<std::string> sdir(split(dir.substr(1,dir.length()-2), ' '));
+    reco_dir_x = std::stod(sdir.at(0));
+    reco_dir_y = std::stod(sdir.at(1));
+    reco_dir_z = std::stod(sdir.at(2));
+  }
+  else
+  {
+    reco_dir_x = -1.0;
+    reco_dir_y = -1.0;
+    reco_dir_z = -1.0;
+  }
 
-  std::string vtx(row[32]);
+  std::string vtx(row[29]);
   std::vector<std::string> svtx(split(vtx.substr(1,vtx.length()-2), ' '));
-  vtx0x = std::stod(svtx.at(0));
-  vtx0y = std::stod(svtx.at(1));
-  vtx0z = std::stod(svtx.at(2));
+  if(vtx != "None")
+  {
+    vtx0x = std::stod(svtx.at(0));
+    vtx0y = std::stod(svtx.at(1));
+    vtx0z = std::stod(svtx.at(2));
+  }
+  else
+  {
+    vtx0x = -1.0;
+    vtx0y = -1.0;
+    vtx0z = -1.0;
+  }
 
-  vtx = row[33];
-  svtx = split(vtx.substr(1,vtx.length()-2), ' ');
-  vtx1x = std::stod(svtx.at(0));
-  vtx1y = std::stod(svtx.at(1));
-  vtx1z = std::stod(svtx.at(2));
+  vtx = row[30];
+  if(vtx != "None")
+  {
+    svtx = split(vtx.substr(1,vtx.length()-2), ' ');
+    vtx1x = std::stod(svtx.at(0));
+    vtx1y = std::stod(svtx.at(1));
+    vtx1z = std::stod(svtx.at(2));
+  }
+  else
+  {
+    vtx1x = -1.0;
+    vtx1y = -1.0;
+    vtx1z = -1.0;
+  }
   
   parent_primaries = "None";
   parent_particles = "None";
@@ -96,17 +120,14 @@ Particle::Particle()
     reco_dir_x(-1),
     reco_dir_y(-1),
     reco_dir_z(-1),
-    p0_localQ_lowest(false),
-    expa(-1),
-    expb(-1),
     vtx0x(0.),
     vtx0y(0.),
     vtx0z(0.),
     vtx1x(0.),
     vtx1y(0.),
     vtx1z(0.),
-    neutron_ancestor(false),
-    primary_heuristic(false),
+    parent_pdg(-1),
+    parent_tid(-1),
     softmax_nonprimary(0),
     softmax_primary(0),
     softmax_photon(0),

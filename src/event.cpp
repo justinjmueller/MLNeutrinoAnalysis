@@ -69,15 +69,6 @@ void Event::generate_pointers()
 {
   for(size_t ii(0); ii < interactions.size(); ++ii)
   {
-    for(auto& n : neutrinos)
-    {
-      if(interactions[ii].nu_id == 1)
-      {
-	interactions[ii].nu_index = &n - &neutrinos[0];
-	n.interaction_index = ii;
-      }
-      else interactions[ii].nu_index = -1;
-    }
     for(size_t pi(0); pi < interactions[ii].particles.size(); ++pi)
       particle_map.insert(std::make_pair(interactions[ii].particles[pi].particle_index, std::make_pair(ii, pi)));
   }
