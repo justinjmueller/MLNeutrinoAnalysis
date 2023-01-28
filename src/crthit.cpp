@@ -12,11 +12,19 @@ CRTHit::CRTHit(const CSVRow& row)
     plane(std::stoi(row[7])),
     tagger(row[8]),
     xpos(std::stod(row[9])),
-    xerr(std::stod(row[10])),
+    xerr(0),
     ypos(std::stod(row[11])),
-    yerr(std::stod(row[12])),
+    yerr(0),
     zpos(std::stod(row[13])),
-    zerr(std::stod(row[14])) { }
+    zerr(0)
+{
+  try{ xerr = std::stod(row[10]); }
+  catch(const std::invalid_argument& e){ xerr = 0; }
+  try{ yerr = std::stod(row[12]); }
+  catch(const std::invalid_argument& e){ yerr = 0; }
+  try{ zerr = std::stod(row[14]); }
+  catch(const std::invalid_argument& e){ yerr = 0; }
+}
 
 CRTHit::CRTHit()
   : image_index(-1),

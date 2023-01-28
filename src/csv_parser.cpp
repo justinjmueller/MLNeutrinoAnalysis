@@ -30,6 +30,11 @@ void CSVRow::read_next_row(std::istream& str)
   data.push_back(pos);
 }
 
+std::string CSVRow::get_line() const
+{
+  return line;
+}
+
 std::istream& operator>>(std::istream& str, CSVRow& data)
 {
   data.read_next_row(str);

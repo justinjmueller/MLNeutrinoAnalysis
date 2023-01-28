@@ -28,7 +28,8 @@ public:
   double energy_init;
   double energy_dep;
   double sed;
-  double reco_energy;
+  double range_reco_energy;
+  double calo_energy;
   double theta;
   double reco_theta;
   int16_t nchildren;

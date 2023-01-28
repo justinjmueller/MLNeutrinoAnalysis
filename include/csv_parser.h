@@ -11,6 +11,7 @@ class CSVRow
   std::string operator[](std::size_t index) const;
   std::size_t size() const;
   void read_next_row(std::istream& str);
+  std::string get_line() const;
  private:
   std::string line;
   std::vector<int> data;

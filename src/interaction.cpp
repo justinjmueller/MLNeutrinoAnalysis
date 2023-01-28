@@ -28,10 +28,19 @@ Interaction::Interaction(const CSVRow& row)
     voxels(0)
 {
   std::string vertex(row[7]);
-  std::vector<std::string> v0(split(vertex.substr(1,vertex.length()-2), ' '));
-  vertex_x = std::stod(v0.at(0));
-  vertex_y = std::stod(v0.at(1));
-  vertex_z = std::stod(v0.at(2));
+  if(vertex != "-1")
+  {
+    std::vector<std::string> v0(split(vertex.substr(1,vertex.length()-2), ' '));
+    vertex_x = std::stod(v0.at(0));
+    vertex_y = std::stod(v0.at(1));
+    vertex_z = std::stod(v0.at(2));
+  }
+  else
+  {
+    vertex_x = 0;
+    vertex_y = 0;
+    vertex_z = 0;
+  }
 
   parse_particle_string(particle_string, particle_multiplicity);
   parse_particle_string(primary_string, primary_multiplicity);
@@ -66,17 +75,17 @@ void Interaction::add_particle(const Particle& p)
   if(p.pid == 2)
   {
     vis_energy += (MUON_MASS + p.energy_dep);
-    reco_vis_energy += (MUON_MASS + p.reco_energy);
+    reco_vis_energy += (MUON_MASS + p.range_reco_energy);
   }
   else if(p.pid == 3)
   {
     vis_energy += (PION_MASS + p.energy_dep);
-    reco_vis_energy += (PION_MASS + p.reco_energy);
+    reco_vis_energy += (PION_MASS + p.range_reco_energy);
   }
   else if(p.pid == 4)
   {
     vis_energy += p.energy_dep;
-    reco_vis_energy += p.reco_energy;
+    reco_vis_energy += p.range_reco_energy;
   }
   voxels += p.voxels;
 }
