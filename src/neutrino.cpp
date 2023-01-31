@@ -13,8 +13,7 @@ Neutrino::Neutrino(const CSVRow& row)
   x(std::stod(row[8])),
   y(std::stod(row[9])),
   z(std::stod(row[10])),
-  t(std::stod(row[11])),
-  interaction_index(9999) { }
+  t(std::stod(row[11])) { }
 
 Neutrino::Neutrino()
   : image_index(-1),
@@ -28,5 +27,4 @@ Neutrino::Neutrino()
     x(-1),
     y(-1),
     z(-1),
-    t(-1),
-    interaction_index(9999) { }
+    t(-1) { }

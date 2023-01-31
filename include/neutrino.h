@@ -19,6 +19,5 @@ class Neutrino
   double y;
   double z;
   double t;
-  size_t interaction_index;
 };
 #endif
