@@ -46,6 +46,7 @@ void Event::add_neutrino(const Neutrino& nu)
 {
   neutrinos.push_back(nu);
   image_index = nu.image_index;
+  triggering_volume = nu.x < 0 ? 0 : 1;
 }
 
 void Event::add_interaction(const Interaction& in)
