@@ -11,12 +11,11 @@ class FMatch
   int32_t image_index;
   int16_t volume;
   int32_t interaction_index;
+  int32_t flash_id;
   double score;
   double totalpe;
   double totalpe0;
   double totalpe1;
-  double totalpe2;
-  double totalpe3;
   double tpc_x;
   double tpc_x_err;
   double tpc_y;

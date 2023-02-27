@@ -24,7 +24,12 @@ Event::Event()
     interaction_map(std::map<uint16_t, size_t>()),
     reco_interaction_map(std::map<uint16_t, size_t>()),
     particle_map(std::map<uint16_t, std::pair<size_t, size_t>>()),
-    reco_particle_map(std::map<uint16_t, std::pair<size_t, size_t>>())
+    reco_particle_map(std::map<uint16_t, std::pair<size_t, size_t>>()),
+    int_ptt_map(std::map<uint16_t, size_t>()),
+    int_ttp_map(std::map<uint16_t, size_t>()),
+    int_fmatch_map(std::map<uint16_t, size_t>()),
+    pmatch_ttp_map(std::map<uint16_t, uint16_t>()),
+    pmatch_ptt_map(std::map<uint16_t, uint16_t>())
     {
       double min_time(99999);
       for(const Interaction& I : interactions)
@@ -57,14 +62,34 @@ void Event::add_reco_interaction(const Interaction& in)
 
 void Event::add_match(const IMatch& ma, bool ptt=true)
 {
-  if(ptt) matches_ptt.push_back(ma);
-  else matches_ttp.push_back(ma);
+  if(ptt)
+  {
+    matches_ptt.push_back(ma);
+    if(ma.to_index != -1)
+      int_ptt_map.insert(std::make_pair(ma.from_index, interaction_map.at(ma.to_index)));
+  }
+  else
+  {
+    matches_ttp.push_back(ma);
+    if(ma.to_index != -1)
+      int_ttp_map.insert(std::make_pair(ma.from_index, reco_interaction_map.at(ma.to_index)));
+  }
 }
 
 void Event::add_pmatch(const PMatch& ma, bool ptt=true)
 {
-  if(ptt) pmatches_ptt.push_back(ma);
-  else pmatches_ttp.push_back(ma);
+  if(ptt)
+  {
+    pmatches_ptt.push_back(ma);
+    if(ma.to_index != -1)// && particle_map.find(ma.to_index) != particle_map.end())
+      pmatch_ptt_map.insert(std::make_pair(ma.from_index, ma.to_index));
+  }
+  else 
+  {
+    pmatches_ttp.push_back(ma);
+    if(ma.to_index != -1)// && reco_particle_map.find(ma.to_index) != reco_particle_map.end())
+      pmatch_ttp_map.insert(std::make_pair(ma.from_index, ma.to_index));
+  }
 }
 
 void Event::add_crthit(const CRTHit& c)
@@ -75,6 +100,7 @@ void Event::add_crthit(const CRTHit& c)
 void Event::add_fmatch(const FMatch& f)
 {
   fmatches.push_back(f);
+  int_fmatch_map.insert(std::make_pair(f.interaction_index, fmatches.size()-1));
 }
 
 void Event::generate_pointers()

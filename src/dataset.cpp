@@ -18,6 +18,7 @@
 
 #include "TFile.h"
 #include "TTree.h"
+#include "TNtupleD.h"
 
 template <class T>
 void read_csv(std::string csv, std::vector<T>& obj_vector);
@@ -186,6 +187,103 @@ void Dataset::print_summary()
             << events.size()
             << " events."
             << std::endl;
+}
+
+void Dataset::add_truth_variable(const std::string name, double (*v)(const Event&, const Interaction&, const Selector&), const Selector& s)
+{
+  tvariables.push_back(std::bind(v, std::placeholders::_1,
+                                std::placeholders::_2, s));
+  if(tvar_tuple_string != "")
+    tvar_tuple_string += (":" + name);
+  else
+    tvar_tuple_string += name;
+}
+
+void Dataset::add_truth_pvariable(const std::string name, double (*v)(const Event&, const Particle&, const PSelector&), const PSelector& s)
+{
+  tpvariables.push_back(std::bind(v, std::placeholders::_1,
+				  std::placeholders::_2, s));
+  if(tpvar_tuple_string != "")
+    tpvar_tuple_string += (":" + name);
+  else
+    tpvar_tuple_string += name;
+}
+
+void Dataset::add_reco_variable(const std::string name, double (*v)(const Event&, const Interaction&, const Selector&), const Selector& s)
+{
+  rvariables.push_back(std::bind(v, std::placeholders::_1,
+                                std::placeholders::_2, s));
+  if(rvar_tuple_string != "")
+    rvar_tuple_string += (":" + name);
+  else
+    rvar_tuple_string += name;
+}
+
+void Dataset::add_reco_pvariable(const std::string name, double (*v)(const Event&, const Particle&, const PSelector&), const PSelector& s)
+{
+  rpvariables.push_back(std::bind(v, std::placeholders::_1,
+				  std::placeholders::_2, s));
+  if(rpvar_tuple_string != "")
+    rpvar_tuple_string += (":" + name);
+  else
+    rpvar_tuple_string += name;
+}
+
+void Dataset::add_common_variable(const std::string name, double (*v)(const Event&, const Interaction&, const Selector&), const Selector& s)
+{
+  add_truth_variable(name, v, s);
+  add_reco_variable(name, v, s);
+}
+
+void Dataset::add_common_pvariable(const std::string name, double (*v)(const Event&, const Particle&, const PSelector&), const PSelector& s)
+{
+  add_truth_pvariable(name, v, s);
+  add_reco_pvariable(name, v, s);
+}
+
+void Dataset::process_analysis(const std::string name)
+{
+  TFile output("analysis_results.root", "recreate");
+  TNtupleD ttuple((name+"_truth").c_str(), (name+"_truth").c_str(), tvar_tuple_string.c_str());
+  TNtupleD rtuple((name+"_reco").c_str(), (name+"_reco").c_str(), rvar_tuple_string.c_str());
+  TNtupleD tptuple((name+"_truth_particle").c_str(), (name+"_truth_particle").c_str(), tpvar_tuple_string.c_str());
+  TNtupleD rptuple((name+"_reco_particle").c_str(), (name+"_reco_particle").c_str(), rpvar_tuple_string.c_str());
+  double vt[tvariables.size()];
+  double vr[rvariables.size()];
+  double vpt[tpvariables.size()];
+  double vpr[rpvariables.size()];
+  for(const auto& obj : events)
+  {
+    for(const Interaction& I : obj.second.interactions)
+    {
+      for(size_t vi(0); vi < tvariables.size(); ++vi)
+        vt[vi] = tvariables.at(vi)(obj.second, I);
+      ttuple.Fill(vt);
+      for(const Particle& p : I.particles)
+      {
+	for(size_t pvi(0); pvi < tpvariables.size(); ++pvi)
+	  vpt[pvi] = tpvariables.at(pvi)(obj.second, p);
+	tptuple.Fill(vpt);
+      }
+    }
+    for(const Interaction& I : obj.second.reco_interactions)
+    {
+      for(size_t vi(0); vi < rvariables.size(); ++vi)
+        vr[vi] = rvariables.at(vi)(obj.second, I);
+      rtuple.Fill(vr);
+      for(const Particle& p : I.particles)
+      {
+	for(size_t pvi(0); pvi < rpvariables.size(); ++pvi)
+	  vpr[pvi] = rpvariables.at(pvi)(obj.second, p);
+	rptuple.Fill(vpr);
+      }
+    }
+  }
+  ttuple.Write();
+  rtuple.Write();
+  tptuple.Write();
+  rptuple.Write();
+  output.Close();
 }
 
 template <class T>
