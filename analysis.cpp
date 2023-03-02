@@ -35,7 +35,7 @@ int main()
   data.add_common_variable("volume", kVolume, sEverything);
   data.add_common_variable("interaction_id", kInteractionID, sEverything);
   data.add_common_variable("match_id", kMatchID, sEverything);
-  data.add_common_variable("primaries", kParticles, sEverything);
+  data.add_common_variable("primaries", kPrimaries, sEverything);
   data.add_common_variable("contained", kCount, sContained);
   data.add_common_variable("is1mu1p", kCount, s1mu1p);
 
@@ -45,6 +45,7 @@ int main()
   data.add_truth_variable("flash_time", kFlashTime, sEverything);
   data.add_truth_variable("interaction_time", kInteractionTime, sEverything);
   data.add_truth_variable("neutrino_energy", kNeutrinoEnergy, sNeutrino);
+  data.add_truth_variable("category", kCategory, sEverything);
 
   // Common particle variables.
   data.add_common_pvariable("event_id", kPEventID, sPEverything);
@@ -56,6 +57,13 @@ int main()
   data.add_common_pvariable("primary", kPrimary, sPEverything);
 
   // Truth particle variables.
+  data.add_truth_pvariable("neutrino", kPCount, sPNeutrino);
+  data.add_truth_pvariable("energy_dep", kParticleEDep, sPEverything);
+
+  // Reco particle variables.
+  data.add_reco_pvariable("sm_primary", kSMPrimary, sPEverything);
+  data.add_reco_pvariable("sm_nonprimary", kSMNonPrimary, sPEverything);
+
 
   data.process_analysis("analysis");
 

@@ -53,4 +53,19 @@ MAKEPVAR(kPrimary)
     return S(evt, p) ? p.primary : -1;
 }
 
+MAKEPVAR(kParticleEDep)
+{
+    return S(evt, p) ? p.energy_dep : -1;
+}
+
+MAKEPVAR(kSMPrimary)
+{
+    return S(evt, p) ? p.softmax_primary : -1;
+}
+
+MAKEPVAR(kSMNonPrimary)
+{
+    return S(evt, p) ? p.softmax_nonprimary : -1;
+}
+
 #endif

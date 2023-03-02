@@ -4,6 +4,7 @@
 #include <functional>
 #include "event.h"
 #include "interaction.h"
+#include "cut.h"
 
 #define MAKEVAR(NAME) double NAME(const Event& evt, const Interaction& I, const Selector& S)
 
@@ -66,6 +67,18 @@ MAKEVAR(kPrimaries)
 {
     auto &x = I.primary_multiplicity;
     return S(evt, I) ? (std::pow(2, x.at(0)) * std::pow(3, x.at(1)) * std::pow(5, x.at(2)) * std::pow(7, x.at(3)) * std::pow(11, x.at(4))) : -1;
+}
+
+MAKEVAR(kCategory)
+{
+    double t(-1);
+    if(S(evt, I))
+    {
+        if(s1mu1p(evt, I) && sNeutrino(evt, I)) t = 0;
+        else if(sNeutrino(evt, I)) t = 1;
+        else t = 2;
+    }
+    return t;
 }
 
 #endif
