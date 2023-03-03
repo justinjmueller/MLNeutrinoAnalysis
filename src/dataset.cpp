@@ -23,7 +23,8 @@
 template <class T>
 void read_csv(std::string csv, std::vector<T>& obj_vector);
 
-Dataset::Dataset(std::string path, std::string sub)
+Dataset::Dataset(std::string path, std::string dname, std::string sub)
+: name(dname)
 {
   std::vector<Particle> particles;
   read_csv(path + "particles" + sub + ".csv", particles);
@@ -241,9 +242,9 @@ void Dataset::add_common_pvariable(const std::string name, double (*v)(const Eve
   add_reco_pvariable(name, v, s);
 }
 
-void Dataset::process_analysis(const std::string name)
+void Dataset::process_analysis()
 {
-  TFile output("analysis_results.root", "recreate");
+  TFile output((name+"_results.root").c_str(), "recreate");
   TNtupleD ttuple((name+"_truth").c_str(), (name+"_truth").c_str(), tvar_tuple_string.c_str());
   TNtupleD rtuple((name+"_reco").c_str(), (name+"_reco").c_str(), rvar_tuple_string.c_str());
   TNtupleD tptuple((name+"_truth_particle").c_str(), (name+"_truth_particle").c_str(), tpvar_tuple_string.c_str());

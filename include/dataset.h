@@ -16,7 +16,7 @@ typedef std::function<double(const Event&, const Particle&)> PVarReduced;
 class Dataset
 {
 public:
-  Dataset(std::string path, std::string sub);
+  Dataset(std::string path, std::string dname, std::string sub="");
   void write_dataset(std::string out="output");
   void read_dataset(std::string in="output");
   void print_summary();
@@ -26,9 +26,10 @@ public:
   void add_reco_pvariable(const std::string name, double (*v)(const Event&, const Particle&, const PSelector&), const PSelector& s);
   void add_common_variable(const std::string name, double (*v)(const Event&, const Interaction&, const Selector&), const Selector& s);
   void add_common_pvariable(const std::string name, double (*v)(const Event&, const Particle&, const PSelector&), const PSelector& s);
-  void process_analysis(const std::string name);
+  void process_analysis();
 
 private:
+  std::string name;
   std::map<int32_t, Event> events;
   std::vector<VarReduced> tvariables;
   std::vector<VarReduced> rvariables;
