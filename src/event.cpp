@@ -29,24 +29,12 @@ Event::Event()
     int_ttp_map(std::map<uint16_t, size_t>()),
     int_fmatch_map(std::map<uint16_t, size_t>()),
     pmatch_ttp_map(std::map<uint16_t, uint16_t>()),
-    pmatch_ptt_map(std::map<uint16_t, uint16_t>())
-    {
-      double min_time(99999);
-      for(const Interaction& I : interactions)
-      {
-        if(std::abs(I.t0) < min_time)
-        {
-          min_time = std::abs(I.t0);
-          triggering_volume = I.volume;
-        }
-      }
-    }
+    pmatch_ptt_map(std::map<uint16_t, uint16_t>()) { }
 
 void Event::add_neutrino(const Neutrino& nu)
 {
   neutrinos.push_back(nu);
   image_index = nu.image_index;
-  triggering_volume = nu.x < 0 ? 0 : 1;
 }
 
 void Event::add_interaction(const Interaction& in)
@@ -116,4 +104,15 @@ void Event::generate_pointers()
     for(size_t pi(0); pi < reco_interactions[ii].particles.size(); ++pi)
       reco_particle_map.insert(std::make_pair(reco_interactions[ii].particles[pi].particle_index, std::make_pair(ii, pi)));
   }
+  double min_time(99999);
+  for(const Interaction& I : interactions)
+  {
+    if(std::abs(I.t0 - 0.8) < min_time)
+    {
+      min_time = std::abs(I.t0 - 0.8);
+      triggering_volume = I.volume;
+    }
+  }
+  for(const Neutrino& nu: neutrinos)
+    if(nu.image_index != -1) triggering_volume = nu.x < 0 ? 0 : 1;
 }

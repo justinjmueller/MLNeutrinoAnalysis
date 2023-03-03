@@ -17,6 +17,11 @@ MAKECUT(sNeutrino)
     return I.nu_id > 0;
 }
 
+MAKECUT(sTriggeringVolume)
+{
+    return I.volume == evt.triggering_volume;
+}
+
 MAKECUT(sContained)
 {
     return I.contained;
