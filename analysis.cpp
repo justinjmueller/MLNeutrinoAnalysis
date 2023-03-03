@@ -43,6 +43,7 @@ int main()
   data.add_truth_variable("signal_true", kCount, sSignalTrue);
   data.add_truth_variable("neutrino", kCount, sNeutrino);
   data.add_truth_variable("flash_time", kFlashTime, sEverything);
+  data.add_truth_variable("flash_x", kFlashX, sEverything);
   data.add_truth_variable("interaction_time", kInteractionTime, sEverything);
   data.add_truth_variable("neutrino_energy", kNeutrinoEnergy, sNeutrino);
   data.add_truth_variable("category", kCategory, sEverything);

@@ -81,4 +81,12 @@ MAKEVAR(kCategory)
     return t;
 }
 
+MAKEVAR(kFlashX)
+{
+    if(S(evt, I) && evt.int_fmatch_map.find(I.interaction_index) != evt.int_fmatch_map.end())
+        return evt.fmatches.at(evt.int_fmatch_map.at(I.interaction_index)).tpc_x;
+    else
+        return 0;
+}
+
 #endif
