@@ -89,4 +89,21 @@ MAKEVAR(kFlashX)
         return 0;
 }
 
+MAKEVAR(kCRTPMT)
+{
+    if(S(evt, I) && evt.int_fmatch_map.find(I.interaction_index) != evt.int_fmatch_map.end())
+    {
+        std::vector<double> match_offsets;
+        for(const CRTHit& h : evt.crthits)
+        {
+            auto off = h.ts1_ns / 1000.0 - evt.fmatches.at(evt.int_fmatch_map.at(I.interaction_index)).flash_time;
+            if(h.tagger == "Top" && std::abs(off) < 0.25) match_offsets.push_back(off);
+        }
+        if(match_offsets.size() == 1) return 1000.0*match_offsets.at(0);
+        else return -99999;
+    }
+    else
+        return -99999;
+}
+
 #endif

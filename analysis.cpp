@@ -48,6 +48,7 @@ int main()
     data.add_truth_variable("interaction_time", kInteractionTime, sEverything);
     data.add_truth_variable("neutrino_energy", kNeutrinoEnergy, sNeutrino);
     data.add_truth_variable("category", kCategory, sEverything);
+    data.add_truth_variable("pmtcrt", kCRTPMT, sEverything);
 
     // Common particle variables.
     data.add_common_pvariable("event_id", kPEventID, sPEverything);
