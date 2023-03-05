@@ -23,6 +23,7 @@ class Event
   void add_crthit(const CRTHit& c);
   void add_fmatch(const FMatch& f);
   void generate_pointers();
+  void pid_reweight();
   int32_t image_index;
   int16_t triggering_volume;
   std::vector<Neutrino> neutrinos;

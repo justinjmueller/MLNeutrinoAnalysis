@@ -66,6 +66,11 @@ int main()
     // Reco particle variables.
     data.add_reco_pvariable("sm_primary", kSMPrimary, sPEverything);
     data.add_reco_pvariable("sm_nonprimary", kSMNonPrimary, sPEverything);
+    data.add_reco_pvariable("sm_photon", kSMPhoton, sPEverything);
+    data.add_reco_pvariable("sm_electron", kSMElectron, sPEverything);
+    data.add_reco_pvariable("sm_muon", kSMMuon, sPEverything);
+    data.add_reco_pvariable("sm_pion", kSMPion, sPEverything);
+    data.add_reco_pvariable("sm_proton", kSMProton, sPEverything);
 
     data.process_analysis();
   }

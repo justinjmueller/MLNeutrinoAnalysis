@@ -116,3 +116,28 @@ void Event::generate_pointers()
   for(const Neutrino& nu: neutrinos)
     if(nu.image_index != -1) triggering_volume = nu.x < 0 ? 0 : 1;
 }
+
+void Event::pid_reweight()
+{
+  std::vector<std::string> types = {"ph", "e", "mu", "pi", "p"};
+  for(Interaction& i : reco_interactions)
+  {
+    for(Particle& p : i.particles)
+    {
+      auto tmp = p.softmax_primary > 0.93315 * p.softmax_nonprimary;
+      if(tmp && !p.primary)
+      {
+        p.primary = true;
+        i.primary_multiplicity.at(p.pid)++;
+      }
+      else if(!tmp && p.primary)
+      {
+        p.primary = false;
+        i.primary_multiplicity.at(p.pid)--;
+      }
+    }
+    i.primary_string = "";
+    for(size_t j(0); j < 5; ++j)
+      i.primary_string += std::to_string(i.primary_multiplicity.at(j)) + types.at(j);
+  }
+}

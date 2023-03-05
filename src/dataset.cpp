@@ -131,6 +131,7 @@ Dataset::Dataset(std::string path, std::string dname, std::string sub)
   for(auto& evt : events)
   {
     evt.second.generate_pointers();
+    evt.second.pid_reweight();
     for(IMatch& m : evt.second.matches_ptt)
     {
       auto ptt_res = find_match(m, evt.second.reco_interactions,

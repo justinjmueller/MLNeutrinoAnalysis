@@ -68,4 +68,29 @@ MAKEPVAR(kSMNonPrimary)
     return S(evt, p) ? p.softmax_nonprimary : -1;
 }
 
+MAKEPVAR(kSMPhoton)
+{
+    return S(evt, p) ? p.softmax_photon : -1;
+}
+
+MAKEPVAR(kSMElectron)
+{
+    return S(evt, p) ? p.softmax_electron : -1;
+}
+
+MAKEPVAR(kSMMuon)
+{
+    return S(evt, p) ? p.softmax_muon : -1;
+}
+
+MAKEPVAR(kSMPion)
+{
+    return S(evt, p) ? p.softmax_pion : -1;
+}
+
+MAKEPVAR(kSMProton)
+{
+    return S(evt, p) ? p.softmax_proton : -1;
+}
+
 #endif
