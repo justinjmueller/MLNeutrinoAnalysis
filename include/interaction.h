@@ -12,6 +12,7 @@ class Interaction
   Interaction(const CSVRow& row);
   Interaction();
   void add_particle(const Particle& p);
+  bool true_not_reco;
   int32_t image_index;
   int16_t volume;
   int16_t interaction_index;

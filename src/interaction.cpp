@@ -11,7 +11,8 @@
 #define PROTON_MASS 938.2720813
 
 Interaction::Interaction(const CSVRow& row)
-  : image_index(std::stoi(row[0])),
+  : true_not_reco(false),
+    image_index(std::stoi(row[0])),
     volume(std::stoi(row[1])),
     interaction_index(std::stoi(row[2])),
     nu_id(std::stoi(row[3])),
@@ -47,7 +48,8 @@ Interaction::Interaction(const CSVRow& row)
 }
 
 Interaction::Interaction()
-  : image_index(-1),
+  : true_not_reco(false),
+    image_index(-1),
     volume(-1),
     interaction_index(-1),
     nu_id(-1),

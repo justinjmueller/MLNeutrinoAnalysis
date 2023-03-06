@@ -32,9 +32,9 @@ MAKEVAR(kVolume)
 
 MAKEVAR(kMatchID)
 {
-    if(I.t0 != -99999999 && evt.int_ttp_map.find(I.interaction_index) != evt.int_ttp_map.end())
+    if(I.true_not_reco && evt.int_ttp_map.find(I.interaction_index) != evt.int_ttp_map.end())
         return S(evt, I) ? evt.reco_interactions.at(evt.int_ttp_map.at(I.interaction_index)).interaction_index : -1;
-    else if(I.t0 == -99999999 && evt.int_ptt_map.find(I.interaction_index) != evt.int_ptt_map.end())
+    else if(!I.true_not_reco && evt.int_ptt_map.find(I.interaction_index) != evt.int_ptt_map.end())
         return S(evt, I) ? evt.interactions.at(evt.int_ptt_map.at(I.interaction_index)).interaction_index : -1;
     return -1;
 }
