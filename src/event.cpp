@@ -23,13 +23,13 @@ Event::Event()
     fmatches(std::vector<FMatch>()),
     interaction_map(std::map<std::pair<uint16_t, uint16_t>, size_t>()),
     reco_interaction_map(std::map<std::pair<uint16_t, uint16_t>, size_t>()),
-    particle_map(std::map<uint16_t, std::pair<size_t, size_t>>()),
-    reco_particle_map(std::map<uint16_t, std::pair<size_t, size_t>>()),
+    particle_map(std::map<std::pair<uint16_t, uint16_t>, std::pair<size_t, size_t>>()),
+    reco_particle_map(std::map<std::pair<uint16_t, uint16_t>, std::pair<size_t, size_t>>()),
     int_ptt_map(std::map<std::pair<uint16_t, uint16_t>, size_t>()),
     int_ttp_map(std::map<std::pair<uint16_t, uint16_t>, size_t>()),
     int_fmatch_map(std::map<std::pair<uint16_t, uint16_t>, size_t>()),
-    pmatch_ttp_map(std::map<uint16_t, uint16_t>()),
-    pmatch_ptt_map(std::map<uint16_t, uint16_t>()) { }
+    pmatch_ttp_map(std::map<std::pair<uint16_t, uint16_t>, uint16_t>()),
+    pmatch_ptt_map(std::map<std::pair<uint16_t, uint16_t>, uint16_t>()) { }
 
 void Event::add_neutrino(const Neutrino& nu)
 {
@@ -70,14 +70,14 @@ void Event::add_pmatch(const PMatch& ma, bool ptt=true)
   if(ptt)
   {
     pmatches_ptt.push_back(ma);
-    if(ma.to_index != -1)// && particle_map.find(ma.to_index) != particle_map.end())
-      pmatch_ptt_map.insert(std::make_pair(ma.from_index, ma.to_index));
+    if(ma.to_index != -1)
+      pmatch_ptt_map.insert(std::make_pair(std::make_pair(ma.from_index, ma.volume), ma.to_index));
   }
   else 
   {
     pmatches_ttp.push_back(ma);
-    if(ma.to_index != -1)// && reco_particle_map.find(ma.to_index) != reco_particle_map.end())
-      pmatch_ttp_map.insert(std::make_pair(ma.from_index, ma.to_index));
+    if(ma.to_index != -1)
+      pmatch_ttp_map.insert(std::make_pair(std::make_pair(ma.from_index, ma.volume), ma.to_index));
   }
 }
 
@@ -97,12 +97,12 @@ void Event::generate_pointers()
   for(size_t ii(0); ii < interactions.size(); ++ii)
   {
     for(size_t pi(0); pi < interactions[ii].particles.size(); ++pi)
-      particle_map.insert(std::make_pair(interactions[ii].particles[pi].particle_index, std::make_pair(ii, pi)));
+      particle_map.insert(std::make_pair(std::make_pair(interactions[ii].particles[pi].particle_index, interactions[ii].volume), std::make_pair(ii, pi)));
   }
   for(size_t ii(0); ii < reco_interactions.size(); ++ii)
   {
     for(size_t pi(0); pi < reco_interactions[ii].particles.size(); ++pi)
-      reco_particle_map.insert(std::make_pair(reco_interactions[ii].particles[pi].particle_index, std::make_pair(ii, pi)));
+      reco_particle_map.insert(std::make_pair(std::make_pair(reco_interactions[ii].particles[pi].particle_index, reco_interactions[ii].volume), std::make_pair(ii, pi)));
   }
   double min_time(99999);
   for(const Interaction& I : interactions)
@@ -166,4 +166,29 @@ bool Event::find_fmatch(const Interaction& in) const
 const FMatch& Event::get_fmatch(const Interaction& in) const
 {
   return fmatches.at(int_fmatch_map.at(std::make_pair(in.interaction_index, in.volume)));
+}
+
+bool Event::find_particle(const Particle& p) const
+{
+  // Check if particle match has been made AND that the matching particle is inserted in the map.
+  const std::pair<uint16_t, uint16_t>& m = std::make_pair(p.particle_index, p.volume);
+  if(p.true_not_reco)
+    return pmatch_ttp_map.find(m) != pmatch_ttp_map.end() && reco_particle_map.find(std::make_pair(pmatch_ttp_map.at(m), p.volume)) != reco_particle_map.end();
+  else
+    return pmatch_ptt_map.find(m) != pmatch_ptt_map.end() && particle_map.find(std::make_pair(pmatch_ptt_map.at(m), p.volume)) != particle_map.end();
+}
+
+const Particle& Event::get_particle(const Particle& p) const
+{
+  const std::pair<uint16_t, uint16_t>& m = std::make_pair(p.particle_index, p.volume);
+  if(p.true_not_reco)
+  {
+    auto& r = reco_particle_map.at(std::make_pair(pmatch_ttp_map.at(m), p.volume));
+    return reco_interactions.at(r.first).particles.at(r.second);
+  }
+  else
+  {
+    auto& r = particle_map.at(std::make_pair(pmatch_ptt_map.at(m), p.volume));
+    return interactions.at(r.first).particles.at(r.second);
+  }
 }

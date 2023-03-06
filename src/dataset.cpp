@@ -63,17 +63,18 @@ Dataset::Dataset(std::string path, std::string dname, std::string sub)
   std::pair<int32_t, int16_t> key;
   for(Interaction& I : interactions)
   {
+    I.true_not_reco = true;
     key = std::make_pair(I.image_index, I.interaction_index);
     interaction_map.insert(std::pair<std::pair<int32_t,int16_t>, Interaction*>(key, &I));
   }
   for(Particle& p : particles)
   {
+    p.true_not_reco = true;
     key = std::make_pair(p.image_index, p.interaction_index);
     interaction_map.at(key)->add_particle(p);
   }
   for(Interaction& I : interactions)
   {
-    I.true_not_reco = true;
     if(events.find(I.image_index) != events.end())
       events.at(I.image_index).add_interaction(I);
     else std::cerr << "Interaction found without corresponding event!" << std::endl;
@@ -82,17 +83,18 @@ Dataset::Dataset(std::string path, std::string dname, std::string sub)
   std::map<std::pair<int32_t,int16_t>, Interaction*> reco_interaction_map;
   for(Interaction& I : reco_interactions)
   {
+    I.true_not_reco = false;
     key = std::make_pair(I.image_index, I.interaction_index);
     reco_interaction_map.insert(std::pair<std::pair<int32_t,int16_t>, Interaction*>(key, &I));
   }
   for(Particle& p : reco_particles)
   {
+    p.true_not_reco = false;
     key = std::make_pair(p.image_index, p.interaction_index);
     reco_interaction_map.at(key)->add_particle(p);
   }
   for(Interaction& I : reco_interactions)
   {
-    I.true_not_reco = false;
     if(events.find(I.image_index) != events.end())
       events.at(I.image_index).add_reco_interaction(I);
     else std::cerr << "Interaction found without corresponding event!" << std::endl;

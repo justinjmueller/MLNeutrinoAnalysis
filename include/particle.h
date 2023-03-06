@@ -9,6 +9,7 @@ class Particle
 public:
   Particle(const CSVRow& row);
   Particle();
+  bool true_not_reco;
   int32_t image_index;
   int16_t volume;
   int16_t particle_index;

@@ -36,11 +36,12 @@ MAKEPVAR(kPVolume)
 
 MAKEPVAR(kPMatchID)
 {
-    if(p.t != -1 && evt.pmatch_ttp_map.find(p.particle_index) != evt.pmatch_ttp_map.end())
-        return S(evt, p) ? evt.pmatch_ttp_map.at(p.particle_index) : -1;
-    else if(p.t == -1 && evt.pmatch_ptt_map.find(p.particle_index) != evt.pmatch_ptt_map.end())
-        return S(evt, p) ? evt.pmatch_ptt_map.at(p.particle_index) : -1;
-    return -1;
+    /*if(p.true_not_reco && evt.find_particle(p))
+        return S(evt, p) ? evt.pmatch_ttp_map.at(std::make_pair(p.particle_index, p.volume)) : -1;
+    else if(!p.true_not_reco && evt.find_particle(p))
+        return S(evt, p) ? evt.pmatch_ptt_map.at(std::make_pair(p.particle_index, p.volume)) : -1;
+    return -1;*/
+    return S(evt, p) && evt.find_particle(p) ? evt.get_particle(p).particle_index : -1;
 }
 
 MAKEPVAR(kPID)

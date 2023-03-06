@@ -5,7 +5,8 @@
 #include "particle.h"
 
 Particle::Particle(const CSVRow& row)
-  : image_index(std::stoi(row[0])),
+  : true_not_reco(false),
+    image_index(std::stoi(row[0])),
     volume(std::stoi(row[1])),
     particle_index(std::stoi(row[2])),
     interaction_index(std::stoi(row[3])),
@@ -92,7 +93,8 @@ Particle::Particle(const CSVRow& row)
 }
 
 Particle::Particle()
-  : image_index(-1),
+  : true_not_reco(false),
+    image_index(-1),
     volume(-1),
     particle_index(-1),
     interaction_index(-1),
