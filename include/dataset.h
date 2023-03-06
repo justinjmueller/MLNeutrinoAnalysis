@@ -19,7 +19,7 @@ public:
   Dataset(std::string path, std::string dname, std::string sub="");
   void write_dataset(std::string out="output");
   void read_dataset(std::string in="output");
-  void print_summary();
+  void print_summary(bool (*ncut)(const Event&, const Interaction&), bool (*dcut)(const Event&, const Interaction&), bool (*pcut)(const Event&, const Interaction&));
   void add_truth_variable(const std::string name, double (*v)(const Event&, const Interaction&, const Selector&), const Selector& s);
   void add_truth_pvariable(const std::string name, double (*v)(const Event&, const Particle&, const PSelector&), const PSelector& s);
   void add_reco_variable(const std::string name, double (*v)(const Event&, const Interaction&, const Selector&), const Selector& s);

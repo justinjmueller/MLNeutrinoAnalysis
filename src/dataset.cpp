@@ -73,6 +73,7 @@ Dataset::Dataset(std::string path, std::string dname, std::string sub)
   }
   for(Interaction& I : interactions)
   {
+    I.true_not_reco = true;
     if(events.find(I.image_index) != events.end())
       events.at(I.image_index).add_interaction(I);
     else std::cerr << "Interaction found without corresponding event!" << std::endl;
@@ -91,6 +92,7 @@ Dataset::Dataset(std::string path, std::string dname, std::string sub)
   }
   for(Interaction& I : reco_interactions)
   {
+    I.true_not_reco = false;
     if(events.find(I.image_index) != events.end())
       events.at(I.image_index).add_reco_interaction(I);
     else std::cerr << "Interaction found without corresponding event!" << std::endl;
@@ -134,19 +136,15 @@ Dataset::Dataset(std::string path, std::string dname, std::string sub)
     evt.second.pid_reweight();
     for(IMatch& m : evt.second.matches_ptt)
     {
-      auto ptt_res = find_match(m, evt.second.reco_interactions,
-				evt.second.interactions);
+      auto ptt_res = find_match(m, evt.second.reco_interactions, evt.second.interactions);
       if(ptt_res.first != -1 && ptt_res.second != -1)
-	m.update(evt.second.reco_interactions.at(ptt_res.first),
-		 evt.second.interactions.at(ptt_res.second));
+        m.update(evt.second.reco_interactions.at(ptt_res.first), evt.second.interactions.at(ptt_res.second));
     }
     for(IMatch& m : evt.second.matches_ttp)
     {
-      auto ttp_res = find_match(m, evt.second.interactions,
-				evt.second.reco_interactions);
+      auto ttp_res = find_match(m, evt.second.interactions, evt.second.reco_interactions);
       if(ttp_res.first != -1 && ttp_res.second != -1)
-	m.update(evt.second.interactions.at(ttp_res.first),
-		 evt.second.reco_interactions.at(ttp_res.second));
+        m.update(evt.second.interactions.at(ttp_res.first), evt.second.reco_interactions.at(ttp_res.second));
     }
   }
 }
@@ -183,12 +181,32 @@ void Dataset::read_dataset(std::string in)
   input.Close();
 }
 
-void Dataset::print_summary()
+void Dataset::print_summary(bool (*ncut)(const Event&, const Interaction&), bool (*dcut)(const Event&, const Interaction&), bool (*pcut)(const Event&, const Interaction&))
 {
-  std::cout << "Dataset has "
-            << events.size()
-            << " events."
-            << std::endl;
+  std::cout << "Dataset has " << events.size() << " events." << std::endl;
+  uint32_t ne(0), de(0), np(0), dp(0);
+  for(std::pair<int32_t, Event> v: events)
+  {
+    for(Interaction& i : v.second.interactions)
+    {
+      if(v.second.find_interaction(i))
+      {
+        
+        if(ncut(v.second, i)) ++ne;
+        if(dcut(v.second, i)) ++de;
+      }
+    }
+    for(Interaction& i : v.second.reco_interactions)
+    {
+      if(v.second.find_interaction(i))
+      {
+        if(ncut(v.second, i)) ++np;
+        if(pcut(v.second, i)) ++dp;
+      }
+    }
+  }
+  std::cout << "Efficiency: " << 100*double(ne)/double(de) << "%" << std::endl;
+  std::cout << "Purity: " << 100*double(np)/double(dp) << "%" << std::endl;
 }
 
 void Dataset::add_truth_variable(const std::string name, double (*v)(const Event&, const Interaction&, const Selector&), const Selector& s)

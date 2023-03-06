@@ -28,7 +28,7 @@ int main()
   all_data.push_back(Dataset("../csv/", "analysis"));
   for(Dataset &data : all_data)
   {
-    data.print_summary();
+    data.print_summary(sMatch1mu1p, sSignalTrue, sSignalReco);
 
     // Common interaction variables.
     data.add_common_variable("event_id", kEventID, sEverything);
