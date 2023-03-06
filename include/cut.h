@@ -29,13 +29,10 @@ MAKECUT(sContained)
 
 MAKECUT(sFlashTime)
 {
-    if(evt.find_interaction(I))
-    {
-        uint64_t ii(evt.get_interaction(I).interaction_index);
-        if(evt.int_fmatch_map.find(ii) != evt.int_fmatch_map.end())
-            return std::abs(evt.fmatches.at(evt.int_fmatch_map.at(ii)).flash_time - 0.8) <= 0.8;
-    }
-    return false;
+    if(evt.find_interaction(I) && evt.find_fmatch(I))
+        return std::abs(evt.get_fmatch(I).flash_time - 0.8) <= 0.8;
+    else
+        return false;
 }
 
 MAKECUT(s1mu1p)

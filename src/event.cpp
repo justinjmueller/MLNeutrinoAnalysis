@@ -27,7 +27,7 @@ Event::Event()
     reco_particle_map(std::map<uint16_t, std::pair<size_t, size_t>>()),
     int_ptt_map(std::map<std::pair<uint16_t, uint16_t>, size_t>()),
     int_ttp_map(std::map<std::pair<uint16_t, uint16_t>, size_t>()),
-    int_fmatch_map(std::map<uint16_t, size_t>()),
+    int_fmatch_map(std::map<std::pair<uint16_t, uint16_t>, size_t>()),
     pmatch_ttp_map(std::map<uint16_t, uint16_t>()),
     pmatch_ptt_map(std::map<uint16_t, uint16_t>()) { }
 
@@ -89,7 +89,7 @@ void Event::add_crthit(const CRTHit& c)
 void Event::add_fmatch(const FMatch& f)
 {
   fmatches.push_back(f);
-  int_fmatch_map.insert(std::make_pair(f.interaction_index, fmatches.size()-1));
+  int_fmatch_map.insert(std::make_pair(std::make_pair(f.interaction_index, f.volume), fmatches.size()-1));
 }
 
 void Event::generate_pointers()
@@ -158,3 +158,12 @@ const Interaction& Event::get_interaction(const Interaction& in) const
     return interactions.at(int_ptt_map.at(std::make_pair(in.interaction_index, in.volume)));
 }
 
+bool Event::find_fmatch(const Interaction& in) const
+{
+  return int_fmatch_map.find(std::make_pair(in.interaction_index, in.volume)) != int_fmatch_map.end();
+}
+
+const FMatch& Event::get_fmatch(const Interaction& in) const
+{
+  return fmatches.at(int_fmatch_map.at(std::make_pair(in.interaction_index, in.volume)));
+}

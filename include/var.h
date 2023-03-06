@@ -41,8 +41,8 @@ MAKEVAR(kMatchID)
 
 MAKEVAR(kFlashTime)
 {
-    if(evt.int_fmatch_map.find(I.interaction_index) != evt.int_fmatch_map.end())
-        return evt.fmatches.at(evt.int_fmatch_map.at(I.interaction_index)).flash_time;
+    if(evt.find_fmatch(I))
+        return evt.get_fmatch(I).flash_time;
     else
         return -999999;
 }
@@ -83,20 +83,20 @@ MAKEVAR(kCategory)
 
 MAKEVAR(kFlashX)
 {
-    if(S(evt, I) && evt.int_fmatch_map.find(I.interaction_index) != evt.int_fmatch_map.end())
-        return evt.fmatches.at(evt.int_fmatch_map.at(I.interaction_index)).tpc_x;
+    if(S(evt, I) && evt.find_fmatch(I))
+        return evt.get_fmatch(I).tpc_x;
     else
         return 0;
 }
 
 MAKEVAR(kCRTPMT)
 {
-    if(S(evt, I) && evt.int_fmatch_map.find(I.interaction_index) != evt.int_fmatch_map.end())
+    if(S(evt, I) && evt.find_fmatch(I))
     {
         std::vector<double> match_offsets;
         for(const CRTHit& h : evt.crthits)
         {
-            auto off = h.ts1_ns / 1000.0 - evt.fmatches.at(evt.int_fmatch_map.at(I.interaction_index)).flash_time;
+            auto off = h.ts1_ns / 1000.0 - evt.get_fmatch(I).flash_time;
             if(h.tagger == "Top" && std::abs(off) < 0.25) match_offsets.push_back(off);
         }
         if(match_offsets.size() == 1) return 1000.0*match_offsets.at(0);
