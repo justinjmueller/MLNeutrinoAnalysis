@@ -21,8 +21,8 @@ Event::Event()
     pmatches_ttp(std::vector<PMatch>()),
     crthits(std::vector<CRTHit>()),
     fmatches(std::vector<FMatch>()),
-    interaction_map(std::map<uint16_t, size_t>()),
-    reco_interaction_map(std::map<uint16_t, size_t>()),
+    interaction_map(std::map<std::pair<uint16_t, uint16_t>, size_t>()),
+    reco_interaction_map(std::map<std::pair<uint16_t, uint16_t>, size_t>()),
     particle_map(std::map<uint16_t, std::pair<size_t, size_t>>()),
     reco_particle_map(std::map<uint16_t, std::pair<size_t, size_t>>()),
     int_ptt_map(std::map<uint16_t, size_t>()),
@@ -40,13 +40,13 @@ void Event::add_neutrino(const Neutrino& nu)
 void Event::add_interaction(const Interaction& in)
 {
   interactions.push_back(in);
-  interaction_map.insert(std::make_pair(in.interaction_index, interactions.size()-1));
+  interaction_map.insert(std::make_pair(std::make_pair(in.interaction_index, in.volume), interactions.size()-1));
 }
 
 void Event::add_reco_interaction(const Interaction& in)
 {
   reco_interactions.push_back(in);
-  reco_interaction_map.insert(std::make_pair(in.interaction_index, reco_interactions.size()-1));
+  reco_interaction_map.insert(std::make_pair(std::make_pair(in.interaction_index, in.volume), reco_interactions.size()-1));
 }
 
 void Event::add_match(const IMatch& ma, bool ptt=true)
@@ -55,13 +55,13 @@ void Event::add_match(const IMatch& ma, bool ptt=true)
   {
     matches_ptt.push_back(ma);
     if(ma.to_index != -1)
-      int_ptt_map.insert(std::make_pair(ma.from_index, interaction_map.at(ma.to_index)));
+      int_ptt_map.insert(std::make_pair(ma.from_index, interaction_map.at(std::make_pair(ma.to_index, ma.volume))));
   }
   else
   {
     matches_ttp.push_back(ma);
     if(ma.to_index != -1)
-      int_ttp_map.insert(std::make_pair(ma.from_index, reco_interaction_map.at(ma.to_index)));
+      int_ttp_map.insert(std::make_pair(ma.from_index, reco_interaction_map.at(std::make_pair(ma.to_index, ma.volume))));
   }
 }
 
