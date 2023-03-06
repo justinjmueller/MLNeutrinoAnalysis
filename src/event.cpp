@@ -25,8 +25,8 @@ Event::Event()
     reco_interaction_map(std::map<std::pair<uint16_t, uint16_t>, size_t>()),
     particle_map(std::map<uint16_t, std::pair<size_t, size_t>>()),
     reco_particle_map(std::map<uint16_t, std::pair<size_t, size_t>>()),
-    int_ptt_map(std::map<uint16_t, size_t>()),
-    int_ttp_map(std::map<uint16_t, size_t>()),
+    int_ptt_map(std::map<std::pair<uint16_t, uint16_t>, size_t>()),
+    int_ttp_map(std::map<std::pair<uint16_t, uint16_t>, size_t>()),
     int_fmatch_map(std::map<uint16_t, size_t>()),
     pmatch_ttp_map(std::map<uint16_t, uint16_t>()),
     pmatch_ptt_map(std::map<uint16_t, uint16_t>()) { }
@@ -55,13 +55,13 @@ void Event::add_match(const IMatch& ma, bool ptt=true)
   {
     matches_ptt.push_back(ma);
     if(ma.to_index != -1)
-      int_ptt_map.insert(std::make_pair(ma.from_index, interaction_map.at(std::make_pair(ma.to_index, ma.volume))));
+      int_ptt_map.insert(std::make_pair(std::make_pair(ma.from_index, ma.volume), interaction_map.at(std::make_pair(ma.to_index, ma.volume))));
   }
   else
   {
     matches_ttp.push_back(ma);
     if(ma.to_index != -1)
-      int_ttp_map.insert(std::make_pair(ma.from_index, reco_interaction_map.at(std::make_pair(ma.to_index, ma.volume))));
+      int_ttp_map.insert(std::make_pair(std::make_pair(ma.from_index, ma.volume), reco_interaction_map.at(std::make_pair(ma.to_index, ma.volume))));
   }
 }
 
@@ -141,3 +141,20 @@ void Event::pid_reweight()
       i.primary_string += std::to_string(i.primary_multiplicity.at(j)) + types.at(j);
   }
 }
+
+bool Event::find_interaction(const Interaction& in) const
+{
+  if(in.true_not_reco)
+    return int_ttp_map.find(std::make_pair(in.interaction_index, in.volume)) != int_ttp_map.end();
+  else
+    return int_ptt_map.find(std::make_pair(in.interaction_index, in.volume)) != int_ptt_map.end();
+}
+
+const Interaction& Event::get_interaction(const Interaction& in) const
+{
+  if(in.true_not_reco)
+    return reco_interactions.at(int_ttp_map.at(std::make_pair(in.interaction_index, in.volume)));
+  else
+    return interactions.at(int_ptt_map.at(std::make_pair(in.interaction_index, in.volume)));
+}
+

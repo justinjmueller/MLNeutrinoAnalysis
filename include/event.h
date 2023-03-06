@@ -24,6 +24,8 @@ class Event
   void add_fmatch(const FMatch& f);
   void generate_pointers();
   void pid_reweight();
+  bool find_interaction(const Interaction& in) const;
+  const Interaction& get_interaction(const Interaction& in) const;
   int32_t image_index;
   int16_t triggering_volume;
   std::vector<Neutrino> neutrinos;
@@ -39,8 +41,8 @@ class Event
   std::map<std::pair<uint16_t, uint16_t>, size_t> reco_interaction_map;
   std::map<uint16_t, std::pair<size_t, size_t>> particle_map;
   std::map<uint16_t, std::pair<size_t, size_t>> reco_particle_map;
-  std::map<uint16_t, size_t> int_ttp_map;
-  std::map<uint16_t, size_t> int_ptt_map;
+  std::map<std::pair<uint16_t, uint16_t>, size_t> int_ttp_map;
+  std::map<std::pair<uint16_t, uint16_t>, size_t> int_ptt_map;
   std::map<uint16_t, size_t> int_fmatch_map;
   std::map<uint16_t, uint16_t> pmatch_ttp_map;
   std::map<uint16_t, uint16_t> pmatch_ptt_map;
