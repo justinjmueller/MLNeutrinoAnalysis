@@ -35,5 +35,11 @@ class FMatch
   double flash_fast_to_total;
   bool flash_in_beam_frame;
   int32_t flash_on_beam_time;
+  double tpc_ext_x0;
+  double tpc_ext_x1;
+  double tpc_ext_y0;
+  double tpc_ext_y1;
+  double tpc_ext_z0;
+  double tpc_ext_z1;
 };
 #endif
