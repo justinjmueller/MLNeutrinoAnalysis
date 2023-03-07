@@ -87,5 +87,5 @@ bool match_strings(std::string s1, std::string s2)
 double drift_adjust(double x, double t0)
 {
   int16_t sign(x < CATHODE_LOCATION * (x < 0 ? -1 : 1) ? -1 : 1);
-  return -sign * t0 * DRIFTV + x;
+  return sign * t0 * DRIFTV + x;
 }
