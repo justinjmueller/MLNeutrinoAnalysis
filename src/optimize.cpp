@@ -44,17 +44,13 @@ Event Optimize::reweight_event(const Event& evt, const std::vector<double>& m) c
     {
         for(Particle& p : i.particles)
         {
-            auto tmp = p.softmax_primary > m.at(0) * p.softmax_nonprimary;
-            if(tmp && !p.primary)
-            {
-                p.primary = true;
-                i.primary_multiplicity.at(p.pid)++;
-            }
-            else if(!tmp && p.primary)
-            {
-                p.primary = false;
-                i.primary_multiplicity.at(p.pid)--;
-            }
+            bool prim = m[0]*p.softmax_primary > m[1]*p.softmax_nonprimary;
+            std::vector<double> psm = {m[2]*p.softmax_photon, m[3]*p.softmax_electron, m[4]*p.softmax_muon, m[5]*p.softmax_pion, m[6]*p.softmax_proton};
+            size_t pid = std::max_element(psm.begin(), psm.end()) - psm.begin();
+            i.particle_multiplicity.at(p.pid)--;
+            if(p.primary) i.primary_multiplicity.at(p.pid)--;
+            i.particle_multiplicity.at(pid)++;
+            if(prim) i.primary_multiplicity.at(pid)++;
         }
         i.primary_string = "";
         for(size_t j(0); j < 5; ++j)
