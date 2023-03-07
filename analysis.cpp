@@ -50,6 +50,13 @@ int main()
     data.add_truth_variable("neutrino_energy", kNeutrinoEnergy, sNeutrino);
     data.add_truth_variable("interaction_type", kInteractionType, sNeutrino);
     data.add_truth_variable("category", kCategory, sEverything);
+    data.add_truth_variable("tpc_ext_x0", kTPCExtX0, sEverything);
+    data.add_truth_variable("tpc_ext_x1", kTPCExtX1, sEverything);
+    data.add_truth_variable("tpc_ext_y0", kTPCExtY0, sEverything);
+    data.add_truth_variable("tpc_ext_y1", kTPCExtY1, sEverything);
+    data.add_truth_variable("tpc_ext_z0", kTPCExtZ0, sEverything);
+    data.add_truth_variable("tpc_ext_z1", kTPCExtZ1, sEverything);
+
     data.add_truth_variable("pmtcrt", kCRTPMT, sEverything);
 
     // Common particle variables.

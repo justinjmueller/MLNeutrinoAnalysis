@@ -1,4 +1,5 @@
 #include "csv_parser.h"
+#include "utilities.h"
 #include "fmatch.h"
 
 FMatch::FMatch(const CSVRow& row)
@@ -28,7 +29,23 @@ FMatch::FMatch(const CSVRow& row)
   flash_width_z(std::stod(row[23])),
   flash_fast_to_total(std::stod(row[24])),
   flash_in_beam_frame(row[25] == "True"),
-  flash_on_beam_time(std::stoi(row[26])) { }
+  flash_on_beam_time(std::stoi(row[26]))
+{
+    std::string ext(row[30]);
+    std::vector<std::string> v0(split(ext.substr(1,ext.length()-2), ' '));
+    tpc_ext_x0 = drift_adjust(std::stod(v0.at(0)), flash_time);
+    tpc_ext_x1 = drift_adjust(std::stod(v0.at(1)), flash_time);
+
+    ext = row[31];
+    v0 = split(ext.substr(1,ext.length()-2), ' ');
+    tpc_ext_y0 = std::stod(v0.at(0));
+    tpc_ext_y1 = std::stod(v0.at(1));
+
+    ext = row[32];
+    v0 = split(ext.substr(1,ext.length()-2), ' ');
+    tpc_ext_z0 = std::stod(v0.at(0));
+    tpc_ext_z1 = std::stod(v0.at(1));
+}
 
 FMatch::FMatch()
 : image_index(-1),
@@ -57,4 +74,10 @@ FMatch::FMatch()
   flash_width_z(-1),
   flash_fast_to_total(-1),
   flash_in_beam_frame(false),
-  flash_on_beam_time(-1) { }
+  flash_on_beam_time(-1),
+  tpc_ext_x0(-1),
+  tpc_ext_x1(-1),
+  tpc_ext_y0(-1),
+  tpc_ext_y1(-1),
+  tpc_ext_z0(-1),
+  tpc_ext_z1(-1) { }
