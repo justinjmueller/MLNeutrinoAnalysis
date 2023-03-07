@@ -57,6 +57,11 @@ MAKEVAR(kNeutrinoEnergy)
     return S(evt, I) ? evt.neutrinos.at(0).momentum : -1;
 }
 
+MAKEVAR(kInteractionType)
+{
+    return S(evt, I) ? evt.neutrinos.at(0).interaction_type : -1;
+}
+
 MAKEVAR(kParticles)
 {
     auto &x = I.particle_multiplicity;
