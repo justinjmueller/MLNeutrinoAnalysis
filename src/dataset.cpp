@@ -151,6 +151,9 @@ Dataset::Dataset(std::string path, std::string dname, std::string sub)
   }
 }
 
+Dataset::Dataset(std::string dname)
+: name(dname) { }
+
 void Dataset::write_dataset(std::string out)
 {
   TFile output((out + ".root").c_str(), "recreate");
@@ -183,6 +186,11 @@ void Dataset::read_dataset(std::string in)
   input.Close();
 }
 
+std::map<int32_t, Event>& Dataset::get_events()
+{
+  return events;
+}
+
 void Dataset::print_summary(bool (*ncut)(const Event&, const Interaction&), bool (*dcut)(const Event&, const Interaction&), bool (*pcut)(const Event&, const Interaction&))
 {
   std::cout << "Dataset has " << events.size() << " events." << std::endl;
@@ -193,7 +201,6 @@ void Dataset::print_summary(bool (*ncut)(const Event&, const Interaction&), bool
     {
       if(v.second.find_interaction(i))
       {
-        
         if(ncut(v.second, i)) ++ne;
         if(dcut(v.second, i)) ++de;
       }
