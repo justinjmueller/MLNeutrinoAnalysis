@@ -49,7 +49,7 @@ int main()
     data.add_truth_variable("interaction_time", kInteractionTime, sEverything);
     data.add_truth_variable("neutrino_energy", kNeutrinoEnergy, sNeutrino);
     data.add_truth_variable("interaction_type", kInteractionType, sNeutrino);
-    data.add_truth_variable("category", kCategory, sEverything);
+    data.add_truth_variable("contained_adj", kCount, sContainedAdj);
     data.add_truth_variable("tpc_ext_x0", kTPCExtX0, sEverything);
     data.add_truth_variable("tpc_ext_x1", kTPCExtX1, sEverything);
     data.add_truth_variable("tpc_ext_y0", kTPCExtY0, sEverything);
