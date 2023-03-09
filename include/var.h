@@ -90,6 +90,14 @@ MAKEVAR(kFlashPE)
         return 0;
 }
 
+MAKEVAR(kVoxels)
+{
+    uint32_t vox(0);
+    for(const Particle& p : I.particles)
+        vox += p.voxels;
+    return vox;
+}
+
 MAKEVAR(kTPCExtX0)
 {
     if(S(evt, I) && evt.find_fmatch(I))

@@ -38,6 +38,7 @@ int main()
     data.add_common_variable("primaries", kPrimaries, sEverything);
     data.add_common_variable("contained", kCount, sContained);
     data.add_common_variable("is1mu1p", kCount, s1mu1p);
+    data.add_common_variable("voxels", kVoxels, sEverything);
 
     // Truth interaction variables.
     data.add_truth_variable("signal_true", kCount, sSignalTrue);
