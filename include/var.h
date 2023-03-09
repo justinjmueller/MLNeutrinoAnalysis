@@ -82,6 +82,14 @@ MAKEVAR(kFlashX)
         return 0;
 }
 
+MAKEVAR(kFlashPE)
+{
+    if(S(evt, I) && evt.find_fmatch(I))
+        return evt.get_fmatch(I).totalpe;
+    else
+        return 0;
+}
+
 MAKEVAR(kTPCExtX0)
 {
     if(S(evt, I) && evt.find_fmatch(I))

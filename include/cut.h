@@ -61,6 +61,39 @@ MAKECUT(sSignalTrue)
     return s1mu1p(evt, I) && sNeutrino(evt, I) && sTriggeringVolume(evt, I);
 }
 
+MAKECUT(s1mu1pVis)
+{
+    // For true signal definition.
+    std::vector<uint16_t> vis_primaries(5);
+    for(const Particle& p : I.particles)
+    {
+        if(p.primary)
+        {
+            switch (p.pid)
+            {
+            case 0:
+                vis_primaries.at(0)++;
+                break;
+            case 1:
+                vis_primaries.at(1)++;
+                break;
+            case 2:
+                if(p.energy_dep > 40.0) vis_primaries.at(2)++;
+                break;
+            case 3:
+                vis_primaries.at(3)++;
+                break;
+            case 4:
+                if(p.energy_dep > 25.0) vis_primaries.at(4)++;
+                break;
+            default:
+                break;
+            }
+        }
+    }
+    return (vis_primaries[0] == 0 && vis_primaries[1] == 0 && vis_primaries[2] == 1 && vis_primaries[3] == 0 && vis_primaries[4] == 1);
+}
+
 MAKECUT(sSignalReco)
 {
     return s1mu1p(evt, I) && sTriggeringVolume(evt, I);

@@ -29,7 +29,6 @@ int main()
   for(Dataset &data : all_data)
   {
     data.print_summary(sMatch1mu1p, sSignalTrue, sSignalReco);
-    data.write_dataset();
 
     // Common interaction variables.
     data.add_common_variable("event_id", kEventID, sEverything);
@@ -42,10 +41,12 @@ int main()
 
     // Truth interaction variables.
     data.add_truth_variable("signal_true", kCount, sSignalTrue);
+    data.add_truth_variable("signal_truevis", kCount, s1mu1pVis);
     data.add_truth_variable("neutrino", kCount, sNeutrino);
     data.add_truth_variable("triggering_volume", kCount, sTriggeringVolume);
     data.add_truth_variable("flash_time", kFlashTime, sEverything);
     data.add_truth_variable("flash_x", kFlashX, sEverything);
+    data.add_truth_variable("flash_pe", kFlashPE, sEverything);
     data.add_truth_variable("interaction_time", kInteractionTime, sEverything);
     data.add_truth_variable("neutrino_energy", kNeutrinoEnergy, sNeutrino);
     data.add_truth_variable("interaction_type", kInteractionType, sNeutrino);
