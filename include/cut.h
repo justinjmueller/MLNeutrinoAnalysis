@@ -7,6 +7,9 @@
 
 #define MAKECUT(NAME) bool NAME(const Event& evt, const Interaction& I)
 #define CNTPAD 5 // Containment padding around volume.
+#define FVPAD 25 // Fiducial padding in non-z directions.
+#define FVPADZU 50 // Fiducial padding along z (upstream).
+#define FVPADZD 30 // Fiducial padding along z (downstream).
 
 MAKECUT(sEverything)
 {
@@ -41,6 +44,21 @@ MAKECUT(sContainedAdj)
         return contained;
     }
     return false;
+}
+
+MAKECUT(sFiducial)
+{
+    if(evt.neutrinos.size() > 0)
+    {
+        const Neutrino& nu = evt.neutrinos.at(0);
+        bool fiducial(false);
+        fiducial = fiducial || ((nu.x > -358.49 + FVPAD) && (nu.x < -61.94 - FVPAD));
+        fiducial = fiducial || ((nu.x < 358.49 - FVPAD) && (nu.x > 61.94 + FVPAD));
+        fiducial = fiducial && ((nu.y > -181.86 + FVPAD) && (nu.y < 134.96 - FVPAD));
+        fiducial = fiducial && ((nu.z > -895.95 + FVPADZD) && (nu.z < 894.95 - FVPADZU));
+        return fiducial;
+    }
+    return true;
 }
 
 MAKECUT(sFlashTime)

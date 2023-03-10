@@ -44,6 +44,7 @@ int main()
     data.add_truth_variable("signal_true", kCount, sSignalTrue);
     data.add_truth_variable("signal_truevis", kCount, s1mu1pVis);
     data.add_truth_variable("neutrino", kCount, sNeutrino);
+    data.add_truth_variable("fiducial", kCount, sFiducial);
     data.add_truth_variable("triggering_volume", kCount, sTriggeringVolume);
     data.add_truth_variable("flash_time", kFlashTime, sEverything);
     data.add_truth_variable("flash_x", kFlashX, sEverything);
