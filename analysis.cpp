@@ -39,6 +39,9 @@ int main()
     data.add_common_variable("contained", kCount, sContained);
     data.add_common_variable("is1mu1p", kCount, s1mu1p);
     data.add_common_variable("voxels", kVoxels, sEverything);
+    data.add_common_variable("vertex_x", kVertexX, sEverything);
+    data.add_common_variable("vertex_y", kVertexY, sEverything);
+    data.add_common_variable("vertex_z", kVertexZ, sEverything);
 
     // Truth interaction variables.
     data.add_truth_variable("signal_true", kCount, sSignalTrue);

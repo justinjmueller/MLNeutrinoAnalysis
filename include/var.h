@@ -97,6 +97,26 @@ MAKEVAR(kVoxels)
         vox += p.voxels;
     return vox;
 }
+MAKEVAR(kVertexX)
+{
+    if(S(evt, I))
+        return I.vertex_x;
+    else return -1;
+}
+
+MAKEVAR(kVertexY)
+{
+    if(S(evt, I))
+        return I.vertex_y;
+    else return -1;
+}
+
+MAKEVAR(kVertexZ)
+{
+    if(S(evt, I))
+        return I.vertex_z;
+    else return -1;
+}
 
 MAKEVAR(kTPCExtX0)
 {
