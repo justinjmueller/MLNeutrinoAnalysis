@@ -18,5 +18,6 @@ std::pair<size_t, size_t> find_match(const PMatch& m, const std::vector<Particle
 void parse_particle_string(std::string s, std::vector<uint16_t>& counts);
 bool match_strings(std::string s1, std::string s2);
 double drift_adjust(double x, double t0);
+void find_vis_primaries(const Interaction& I, std::vector<uint16_t>& vis_primaries);
 
 #endif

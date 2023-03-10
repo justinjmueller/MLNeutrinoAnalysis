@@ -89,3 +89,33 @@ double drift_adjust(double x, double t0)
   int16_t sign(x < CATHODE_LOCATION * (x < 0 ? -1 : 1) ? -1 : 1);
   return sign * t0 * DRIFTV + x;
 }
+
+void find_vis_primaries(const Interaction& I, std::vector<uint16_t>& vis_primaries)
+{
+  for(const Particle& p : I.particles)
+  {
+    if(p.primary)
+    {
+        switch (p.pid)
+        {
+        case 0:
+            vis_primaries.at(0)++;
+            break;
+        case 1:
+            vis_primaries.at(1)++;
+            break;
+        case 2:
+            if(p.energy_dep > 40.0) vis_primaries.at(2)++;
+            break;
+        case 3:
+            vis_primaries.at(3)++;
+            break;
+        case 4:
+            if(p.energy_dep > 25.0) vis_primaries.at(4)++;
+            break;
+        default:
+            break;
+        }
+    }
+  }
+}
