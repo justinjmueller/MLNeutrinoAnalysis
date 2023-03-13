@@ -45,7 +45,6 @@ Interaction::Interaction(const CSVRow& row)
   parse_particle_string(particle_string, particle_multiplicity);
   parse_particle_string(primary_string, primary_multiplicity);
 
-  std::cerr << row[9] << std::endl;
   std::string ext(row[9]);
   if(ext != "0" && ext != "-1" && ext != "1")
   {
