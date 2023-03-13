@@ -120,48 +120,48 @@ MAKEVAR(kVertexZ)
 
 MAKEVAR(kTPCExtX0)
 {
-    if(S(evt, I) && evt.find_fmatch(I))
-        return evt.get_fmatch(I).tpc_ext_x0;
+    if(S(evt, I))
+        return I.tpc_ext_x0;
     else
         return 0;
 }
 
 MAKEVAR(kTPCExtX1)
 {
-    if(S(evt, I) && evt.find_fmatch(I))
-        return evt.get_fmatch(I).tpc_ext_x1;
+    if(S(evt, I))
+        return I.tpc_ext_x1;
     else
         return 0;
 }
 
 MAKEVAR(kTPCExtY0)
 {
-    if(S(evt, I) && evt.find_fmatch(I))
-        return evt.get_fmatch(I).tpc_ext_y0;
+    if(S(evt, I))
+        return I.tpc_ext_y0;
     else
         return 0;
 }
 
 MAKEVAR(kTPCExtY1)
 {
-    if(S(evt, I) && evt.find_fmatch(I))
-        return evt.get_fmatch(I).tpc_ext_y1;
+    if(S(evt, I))
+        return I.tpc_ext_y1;
     else
         return 0;
 }
 
 MAKEVAR(kTPCExtZ0)
 {
-    if(S(evt, I) && evt.find_fmatch(I))
-        return evt.get_fmatch(I).tpc_ext_z0;
+    if(S(evt, I))
+        return I.tpc_ext_z0;
     else
         return 0;
 }
 
 MAKEVAR(kTPCExtZ1)
 {
-    if(S(evt, I) && evt.find_fmatch(I))
-        return evt.get_fmatch(I).tpc_ext_z1;
+    if(S(evt, I))
+        return I.tpc_ext_z1;
     else
         return 0;
 }

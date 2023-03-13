@@ -34,17 +34,12 @@ MAKECUT(sContained)
 
 MAKECUT(sContainedAdj)
 {
-    if(evt.find_fmatch(I))
-    {
-        const FMatch& f(evt.get_fmatch(I));
-        bool contained(false);
-        contained = contained || ((f.tpc_ext_x0 > -358.49 + CNTPAD) && (f.tpc_ext_x1 < -61.94 - CNTPAD));
-        contained = contained || ((f.tpc_ext_x1 < 358.49 - CNTPAD) && (f.tpc_ext_x0 > 61.94 + CNTPAD));
-        contained = contained && ((f.tpc_ext_y0 > -181.86 + CNTPAD) && (f.tpc_ext_y1 < 134.96 - CNTPAD));
-        contained = contained && ((f.tpc_ext_z0 > -895.95 + CNTPAD) && (f.tpc_ext_z1 < 894.95 - CNTPAD));
-        return contained;
-    }
-    return false;
+    bool contained(false);
+    contained = contained || ((I.tpc_ext_x0 > -358.49 + CNTPAD) && (I.tpc_ext_x1 < -61.94 - CNTPAD));
+    contained = contained || ((I.tpc_ext_x1 < 358.49 - CNTPAD) && (I.tpc_ext_x0 > 61.94 + CNTPAD));
+    contained = contained && ((I.tpc_ext_y0 > -181.86 + CNTPAD) && (I.tpc_ext_y1 < 134.96 - CNTPAD));
+    contained = contained && ((I.tpc_ext_z0 > -895.95 + CNTPAD) && (I.tpc_ext_z1 < 894.95 - CNTPAD));
+    return contained;
 }
 
 MAKECUT(sFiducial)

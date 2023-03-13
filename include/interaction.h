@@ -26,11 +26,16 @@ class Interaction
   double vertex_y;
   double vertex_z;
   double t0;
-  size_t nu_index;
   bool contained;
   double vis_energy;
   double reco_vis_energy;
   std::vector<Particle> particles;
   uint32_t voxels;
+  double tpc_ext_x0;
+  double tpc_ext_x1;
+  double tpc_ext_y0;
+  double tpc_ext_y1;
+  double tpc_ext_z0;
+  double tpc_ext_z1;
 };
 #endif

@@ -22,7 +22,6 @@ Interaction::Interaction(const CSVRow& row)
     primary_multiplicity(std::vector<uint16_t>(5,0)),
     michel_present(row[6] == "True"),
     t0(std::stod(row[8])),
-    nu_index(std::stoi(row[9])),
     contained(true),
     vis_energy(0),
     reco_vis_energy(0),
@@ -45,6 +44,25 @@ Interaction::Interaction(const CSVRow& row)
 
   parse_particle_string(particle_string, particle_multiplicity);
   parse_particle_string(primary_string, primary_multiplicity);
+
+  std::cerr << row[9] << std::endl;
+  std::string ext(row[9]);
+  if(ext != "0" && ext != "-1" && ext != "1")
+  {
+    std::vector<std::string> v0(split(ext.substr(1,ext.length()-2), ' '));
+    tpc_ext_x0 = std::stod(v0.at(0));//drift_adjust(std::stod(v0.at(0)), flash_time);
+    tpc_ext_x1 = std::stod(v0.at(1));//drift_adjust(std::stod(v0.at(1)), flash_time);
+
+    ext = row[10];
+    v0 = split(ext.substr(1,ext.length()-2), ' ');
+    tpc_ext_y0 = std::stod(v0.at(0));
+    tpc_ext_y1 = std::stod(v0.at(1));
+
+    ext = row[11];
+    v0 = split(ext.substr(1,ext.length()-2), ' ');
+    tpc_ext_z0 = std::stod(v0.at(0));
+    tpc_ext_z1 = std::stod(v0.at(1));
+  }
 }
 
 Interaction::Interaction()
@@ -62,11 +80,16 @@ Interaction::Interaction()
     vertex_y(-1),
     vertex_z(-1),
     t0(0),
-    nu_index(-1),
     contained(true),
     vis_energy(0),
     reco_vis_energy(0),
-    voxels(0) { }
+    voxels(0),
+    tpc_ext_x0(-1),
+    tpc_ext_x1(-1),
+    tpc_ext_y0(-1),
+    tpc_ext_y1(-1),
+    tpc_ext_z0(-1),
+    tpc_ext_z1(-1) { }
 
 void Interaction::add_particle(const Particle& p)
 {
