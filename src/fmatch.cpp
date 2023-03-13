@@ -3,7 +3,8 @@
 #include "fmatch.h"
 
 FMatch::FMatch(const CSVRow& row)
-: image_index(std::stoi(row[0])),
+: true_not_reco(false),
+  image_index(std::stoi(row[0])),
   volume(std::stoi(row[1])),
   interaction_index(std::stoi(row[2])),
   flash_id(std::stoi(row[3])),
@@ -32,7 +33,8 @@ FMatch::FMatch(const CSVRow& row)
   flash_on_beam_time(std::stoi(row[26])) { }
 
 FMatch::FMatch()
-: image_index(-1),
+: true_not_reco(false),
+  image_index(-1),
   volume(-1),
   interaction_index(-1),
   flash_id(-1),

@@ -48,6 +48,8 @@ Dataset::Dataset(std::string path, std::string dname, std::string sub)
   read_csv(path + "crthits" + sub + ".csv", crthits);
   std::vector<FMatch> fmatches;
   read_csv(path + "fmatches" + sub + ".csv", fmatches);
+  std::vector<FMatch> reco_fmatches;
+  read_csv(path + "reco_fmatch" + sub + ".csv", reco_fmatches);
 
   for(Neutrino& nu : neutrinos)
   {
@@ -128,8 +130,15 @@ Dataset::Dataset(std::string path, std::string dname, std::string sub)
   }
   for(FMatch& f : fmatches)
   {
+    f.true_not_reco = true;
     if(events.find(f.image_index) != events.end()) events.at(f.image_index).add_fmatch(f);
     else std::cerr << "FMatch found without corresponding event!" << std::endl;
+  }
+  for(FMatch& f : reco_fmatches)
+  {
+    f.true_not_reco = false;
+    if(events.find(f.image_index) != events.end()) events.at(f.image_index).add_fmatch(f);
+    else std::cerr << "Reco FMatch found without corresponding event!" << std::endl;
   }
   
   for(auto& evt : events)

@@ -8,6 +8,7 @@ class FMatch
  public:
   FMatch(const CSVRow& row);
   FMatch();
+  bool true_not_reco;
   int32_t image_index;
   int16_t volume;
   int32_t interaction_index;
