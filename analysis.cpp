@@ -53,12 +53,12 @@ int main()
     data.add_common_variable("tpc_ext_y1", kTPCExtY1, sEverything);
     data.add_common_variable("tpc_ext_z0", kTPCExtZ0, sEverything);
     data.add_common_variable("tpc_ext_z1", kTPCExtZ1, sEverything);
+    data.add_common_variable("signal_1mu1pvis", kCount, s1mu1pVis);
+    data.add_common_variable("signal_1muNpvis", kCount, s1muNpVis);
+    data.add_common_variable("signal_1muIncvis", kCount, s1muIncVis);
 
     // Truth interaction variables.
     data.add_truth_variable("signal_true", kCount, sSignalTrue);
-    data.add_truth_variable("signal_true1mu1pvis", kCount, s1mu1pVis);
-    data.add_truth_variable("signal_true1muNpvis", kCount, s1muNpVis);
-    data.add_truth_variable("signal_true1muIncvis", kCount, s1muIncVis);
     data.add_truth_variable("neutrino", kCount, sNeutrino);
     data.add_truth_variable("triggering_volume", kCount, sTriggeringVolume);
     data.add_truth_variable("interaction_time", kInteractionTime, sEverything);

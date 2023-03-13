@@ -72,7 +72,6 @@ MAKECUT(sSignalTrue)
 
 MAKECUT(s1mu1pVis)
 {
-    // For true signal definition.
     std::vector<uint16_t> vis_primaries(5, 0);
     find_vis_primaries(I, vis_primaries);
     return (vis_primaries[0] == 0 && vis_primaries[1] == 0 && vis_primaries[2] == 1 && vis_primaries[3] == 0 && vis_primaries[4] == 1);
@@ -80,7 +79,6 @@ MAKECUT(s1mu1pVis)
 
 MAKECUT(s1muNpVis)
 {
-    // For true signal definition.
     std::vector<uint16_t> vis_primaries(5, 0);
     find_vis_primaries(I, vis_primaries);
     return (vis_primaries[0] == 0 && vis_primaries[1] == 0 && vis_primaries[2] == 1 && vis_primaries[3] == 0 && vis_primaries[4] >= 1);
@@ -88,7 +86,6 @@ MAKECUT(s1muNpVis)
 
 MAKECUT(s1muIncVis)
 {
-    // For true signal definition.
     std::vector<uint16_t> vis_primaries(5, 0);
     find_vis_primaries(I, vis_primaries);
     return (vis_primaries[2] == 1);
