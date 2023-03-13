@@ -44,17 +44,12 @@ MAKECUT(sContainedAdj)
 
 MAKECUT(sFiducial)
 {
-    if(evt.neutrinos.size() > 0)
-    {
-        const Neutrino& nu = evt.neutrinos.at(0);
-        bool fiducial(false);
-        fiducial = fiducial || ((nu.x > -358.49 + FVPAD) && (nu.x < -61.94 - FVPAD));
-        fiducial = fiducial || ((nu.x < 358.49 - FVPAD) && (nu.x > 61.94 + FVPAD));
-        fiducial = fiducial && ((nu.y > -181.86 + FVPAD) && (nu.y < 134.96 - FVPAD));
-        fiducial = fiducial && ((nu.z > -895.95 + FVPADZD) && (nu.z < 894.95 - FVPADZU));
-        return fiducial;
-    }
-    return true;
+    bool fiducial(false);
+    fiducial = fiducial || ((I.vertex_x > -358.49 + FVPAD) && (I.vertex_x < -61.94 - FVPAD));
+    fiducial = fiducial || ((I.vertex_x < 358.49 - FVPAD) && (I.vertex_x > 61.94 + FVPAD));
+    fiducial = fiducial && ((I.vertex_y > -181.86 + FVPAD) && (I.vertex_y < 134.96 - FVPAD));
+    fiducial = fiducial && ((I.vertex_z > -895.95 + FVPADZD) && (I.vertex_z < 894.95 - FVPADZU));
+    return fiducial;
 }
 
 MAKECUT(sFlashTime)

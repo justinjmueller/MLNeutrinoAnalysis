@@ -46,6 +46,7 @@ int main()
     data.add_common_variable("flash_time", kFlashTime, sEverything);
     data.add_common_variable("flash_x", kFlashX, sEverything);
     data.add_common_variable("flash_pe", kFlashPE, sEverything);
+    data.add_common_variable("fiducial", kCount, sFiducial);
 
     // Truth interaction variables.
     data.add_truth_variable("signal_true", kCount, sSignalTrue);
@@ -53,7 +54,6 @@ int main()
     data.add_truth_variable("signal_true1muNpvis", kCount, s1muNpVis);
     data.add_truth_variable("signal_true1muIncvis", kCount, s1muIncVis);
     data.add_truth_variable("neutrino", kCount, sNeutrino);
-    data.add_truth_variable("fiducial", kCount, sFiducial);
     data.add_truth_variable("triggering_volume", kCount, sTriggeringVolume);
     
     data.add_truth_variable("interaction_time", kInteractionTime, sEverything);
