@@ -32,11 +32,10 @@ MAKEVAR(kVolume)
 
 MAKEVAR(kMatchID)
 {
-    if(I.true_not_reco && evt.find_interaction(I))
-        return S(evt, I) ? evt.get_interaction(I).interaction_index : -1;
-    else if(!I.true_not_reco && evt.find_interaction(I))
-        return S(evt, I) ? evt.get_interaction(I).interaction_index : -1;
-    return -1;
+    if(S(evt, I) && evt.find_interaction(I))
+        return evt.get_interaction(I).interaction_index;
+    else
+        return -1;
 }
 
 MAKEVAR(kFlashTime)
