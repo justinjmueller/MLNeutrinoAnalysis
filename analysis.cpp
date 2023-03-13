@@ -47,6 +47,12 @@ int main()
     data.add_common_variable("flash_x", kFlashX, sEverything);
     data.add_common_variable("flash_pe", kFlashPE, sEverything);
     data.add_common_variable("fiducial", kCount, sFiducial);
+    data.add_common_variable("tpc_ext_x0", kTPCExtX0, sEverything);
+    data.add_common_variable("tpc_ext_x1", kTPCExtX1, sEverything);
+    data.add_common_variable("tpc_ext_y0", kTPCExtY0, sEverything);
+    data.add_common_variable("tpc_ext_y1", kTPCExtY1, sEverything);
+    data.add_common_variable("tpc_ext_z0", kTPCExtZ0, sEverything);
+    data.add_common_variable("tpc_ext_z1", kTPCExtZ1, sEverything);
 
     // Truth interaction variables.
     data.add_truth_variable("signal_true", kCount, sSignalTrue);
@@ -55,18 +61,10 @@ int main()
     data.add_truth_variable("signal_true1muIncvis", kCount, s1muIncVis);
     data.add_truth_variable("neutrino", kCount, sNeutrino);
     data.add_truth_variable("triggering_volume", kCount, sTriggeringVolume);
-    
     data.add_truth_variable("interaction_time", kInteractionTime, sEverything);
     data.add_truth_variable("neutrino_energy", kNeutrinoEnergy, sNeutrino);
     data.add_truth_variable("interaction_type", kInteractionType, sNeutrino);
     data.add_truth_variable("contained_adj", kCount, sContainedAdj);
-    data.add_truth_variable("tpc_ext_x0", kTPCExtX0, sEverything);
-    data.add_truth_variable("tpc_ext_x1", kTPCExtX1, sEverything);
-    data.add_truth_variable("tpc_ext_y0", kTPCExtY0, sEverything);
-    data.add_truth_variable("tpc_ext_y1", kTPCExtY1, sEverything);
-    data.add_truth_variable("tpc_ext_z0", kTPCExtZ0, sEverything);
-    data.add_truth_variable("tpc_ext_z1", kTPCExtZ1, sEverything);
-
     data.add_truth_variable("pmtcrt", kCRTPMT, sEverything);
 
     // Common particle variables.
