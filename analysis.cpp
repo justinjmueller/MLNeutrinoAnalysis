@@ -25,6 +25,7 @@ int main()
 {
   std::vector<Dataset> all_data;
   all_data.push_back(Dataset("../csv/nucosmic/", "analysis"));
+  all_data.push_back(Dataset("../csv/intime/", "analysis_intime"));
   for(Dataset &data : all_data)
   {
     data.print_summary(sMatch1mu1p, sSignalTrue, sSignalReco);
