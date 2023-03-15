@@ -36,11 +36,6 @@ MAKEPVAR(kPVolume)
 
 MAKEPVAR(kPMatchID)
 {
-    /*if(p.true_not_reco && evt.find_particle(p))
-        return S(evt, p) ? evt.pmatch_ttp_map.at(std::make_pair(p.particle_index, p.volume)) : -1;
-    else if(!p.true_not_reco && evt.find_particle(p))
-        return S(evt, p) ? evt.pmatch_ptt_map.at(std::make_pair(p.particle_index, p.volume)) : -1;
-    return -1;*/
     return S(evt, p) && evt.find_particle(p) ? evt.get_particle(p).particle_index : -1;
 }
 
@@ -57,6 +52,11 @@ MAKEPVAR(kPrimary)
 MAKEPVAR(kParticleEDep)
 {
     return S(evt, p) ? p.energy_dep : -1;
+}
+
+MAKEPVAR(kParticleRREnergy)
+{
+    return S(evt, p) ? p.range_reco_energy : -1;
 }
 
 MAKEPVAR(kSMPrimary)
