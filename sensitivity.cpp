@@ -13,7 +13,7 @@
 #define NBINS 25
 #define NTOYS 10000
 #define SCALE 0.208
-#define NGRID 100
+#define NGRID 1000
 
 typedef Eigen::MatrixXd Matrix;
 typedef Eigen::ArrayXd Array;
@@ -26,7 +26,7 @@ void make_grid(std::vector<double>& m0, std::vector<double>& m1)
     for(size_t j(0); j < NGRID; ++j)
     {
       m0.push_back(i*(1.00 / NGRID));
-      m1.push_back(j*(10.0 / NGRID));
+      m1.push_back(j*(100.0 / NGRID));
     }
   }
 }
@@ -49,7 +49,7 @@ void throw_toy_esys(std::vector<double>& l, std::vector<double>& e, Matrix& m, s
     TH1D *hist = new TH1D("hist", "hist", NBINS, 0.25, 2.5);
     std::random_device rd{};
     std::mt19937 gen{rd()};
-    std::normal_distribution<> d{1.00, 0.05};
+    std::normal_distribution<> d{1.00, 0.10};
     for(size_t i(0); i < l.size(); ++i)
         hist->Fill(l[i] / (1000 * e[i] * d(gen)));
     for(size_t i(0); i < NBINS; ++i)
@@ -62,7 +62,7 @@ void throw_toy_fsys(std::vector<double>& l, std::vector<double>& e, Matrix& m, s
     TH1D *hist = new TH1D("hist", "hist", NBINS, 0.25, 2.5);
     std::random_device rd{};
     std::mt19937 gen{rd()};
-    std::normal_distribution<> d{1.00, 0.05};
+    std::normal_distribution<> d{1.00, 0.10};
     double flux_sys(d(gen));
     for(size_t i(0); i < l.size(); ++i)
         hist->Fill(l[i] / (1000 * e[i]), flux_sys);
@@ -85,29 +85,29 @@ Matrix scale_partial(Matrix& partial, Vector& means)
 
 double throw_point(std::vector<double>& le, std::vector<Matrix>& partials, double theta, double dm)
 {
-    TH1D *osc = new TH1D("osc", "osc", NBINS, 0.25, 2.5);
     TH1D *nul = new TH1D("nul", "nul", NBINS, 0.25, 2.5);
+    TH1D *alt = new TH1D("alt", "alt", NBINS, 0.25, 2.5);
     for(size_t i(0); i < le.size(); ++i)
     {
-        osc->Fill(le[i], SCALE*(1-theta*std::sin(1.27*dm*le[i])*std::sin(1.27*dm*le[i])));
-        nul->Fill(le[i], SCALE);
+        nul->Fill(le[i], SCALE*(1-theta*std::sin(1.27*dm*le[i])*std::sin(1.27*dm*le[i])));
+        alt->Fill(le[i], SCALE);
     }
-    Vector osc_vec(NBINS), nul_vec(NBINS);
+    Vector nul_vec(NBINS), alt_vec(NBINS);
     Matrix M_stat(Eigen::MatrixXd::Zero(NBINS, NBINS));
     for(size_t b(0); b < NBINS; ++b)
     {
-        osc_vec(b) = osc->GetBinContent(b);
         nul_vec(b) = nul->GetBinContent(b);
-        M_stat(b, b) = 3.0 / (1.0 / nul_vec(b) + 2.0 / osc_vec(b));
+        alt_vec(b) = alt->GetBinContent(b);
+        M_stat(b, b) = 3.0 / (1.0 / nul_vec(b) + 2.0 / alt_vec(b));
     }
-    delete osc;
     delete nul;
+    delete alt;
     
     Matrix M_syst(Eigen::MatrixXd::Zero(NBINS, NBINS));
     for(size_t s(0); s < partials.size(); ++s)
-        M_syst += scale_partial(partials[s], nul_vec);
+        M_syst += scale_partial(partials[s], alt_vec);
     
-    Vector difference(nul_vec - osc_vec);
+    Vector difference(nul_vec - alt_vec);
     return difference.transpose()*(((M_stat + M_syst).inverse())*difference);
 }
 
