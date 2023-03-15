@@ -165,6 +165,38 @@ MAKEVAR(kTPCExtZ1)
         return 0;
 }
 
+MAKEVAR(kMuonEnergy)
+{
+    if(S(evt, I))
+    {   
+        double max(-1.);
+        for(const Particle& p : I.particles)
+        {
+            if(p.pid == 2 && p.primary && (I.true_not_reco ? p.energy_dep : p.range_reco_energy) > max)
+                max = (I.true_not_reco ? p.energy_dep : p.range_reco_energy);
+        }
+        return max;
+    }
+    else
+        return -1;
+}
+
+MAKEVAR(kProtonEnergy)
+{
+    if(S(evt, I))
+    {   
+        double max(-1.);
+        for(const Particle& p : I.particles)
+        {
+            if(p.pid == 4 && p.primary && (I.true_not_reco ? p.energy_dep : p.range_reco_energy) > max)
+                max = (I.true_not_reco ? p.energy_dep : p.range_reco_energy);
+        }
+        return max;
+    }
+    else
+        return -1;
+}
+
 MAKEVAR(kCRTPMT)
 {
     if(S(evt, I) && evt.find_fmatch(I))
