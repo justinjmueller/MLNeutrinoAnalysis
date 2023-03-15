@@ -61,18 +61,18 @@ Dataset::Dataset(std::string path, std::string dname, std::string sub)
     else events.at(nu.image_index).add_neutrino(nu);
   }
 
-  std::map<std::pair<int32_t,int16_t>, Interaction*> interaction_map;
-  std::pair<int32_t, int16_t> key;
+  std::map<std::pair<int32_t,std::pair<uint16_t, uint16_t>>, Interaction*> interaction_map;
+  std::pair<int32_t, std::pair<uint16_t, uint16_t>> key;
   for(Interaction& I : interactions)
   {
     I.true_not_reco = true;
-    key = std::make_pair(I.image_index, I.interaction_index);
-    interaction_map.insert(std::pair<std::pair<int32_t,int16_t>, Interaction*>(key, &I));
+    key = std::make_pair(I.image_index, std::make_pair(I.interaction_index, I.volume));
+    interaction_map.insert(std::make_pair(key, &I));
   }
   for(Particle& p : particles)
   {
     p.true_not_reco = true;
-    key = std::make_pair(p.image_index, p.interaction_index);
+    key = std::make_pair(p.image_index, std::make_pair(p.interaction_index, p.volume));
     interaction_map.at(key)->add_particle(p);
   }
   for(Interaction& I : interactions)
@@ -82,17 +82,17 @@ Dataset::Dataset(std::string path, std::string dname, std::string sub)
     else std::cerr << "Interaction found without corresponding event!" << std::endl;
   }
 
-  std::map<std::pair<int32_t,int16_t>, Interaction*> reco_interaction_map;
+  std::map<std::pair<int32_t,std::pair<uint16_t, uint16_t>>, Interaction*> reco_interaction_map;
   for(Interaction& I : reco_interactions)
   {
     I.true_not_reco = false;
-    key = std::make_pair(I.image_index, I.interaction_index);
-    reco_interaction_map.insert(std::pair<std::pair<int32_t,int16_t>, Interaction*>(key, &I));
+    key = std::make_pair(I.image_index, std::make_pair(I.interaction_index, I.volume));
+    reco_interaction_map.insert(std::make_pair(key, &I));
   }
   for(Particle& p : reco_particles)
   {
     p.true_not_reco = false;
-    key = std::make_pair(p.image_index, p.interaction_index);
+    key = std::make_pair(p.image_index, std::make_pair(p.interaction_index, p.volume));
     reco_interaction_map.at(key)->add_particle(p);
   }
   for(Interaction& I : reco_interactions)
