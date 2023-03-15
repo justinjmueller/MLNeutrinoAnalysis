@@ -55,6 +55,8 @@ int main()
     data.add_common_variable("signal_1mu1pvis", kCount, s1mu1pVis);
     data.add_common_variable("signal_1muNpvis", kCount, s1muNpVis);
     data.add_common_variable("signal_1muIncvis", kCount, s1muIncVis);
+    data.add_common_variable("muon_energy", kMuonEnergy, sEverything);
+    data.add_common_variable("proton_energy", kProtonEnergy, sEverything);
 
     // Truth interaction variables.
     data.add_truth_variable("signal_true", kCount, sSignalTrue);
@@ -74,6 +76,7 @@ int main()
     data.add_common_pvariable("match_id", kPMatchID, sPEverything);
     data.add_common_pvariable("pid", kPID, sPEverything);
     data.add_common_pvariable("primary", kPrimary, sPEverything);
+    data.add_common_pvariable("range_reco_energy", kParticleRREnergy, sPEverything);
 
     // Truth particle variables.
     data.add_truth_pvariable("neutrino", kPCount, sPNeutrino);
