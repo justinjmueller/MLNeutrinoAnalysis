@@ -105,13 +105,13 @@ void find_vis_primaries(const Interaction& I, std::vector<uint16_t>& vis_primari
             vis_primaries.at(1)++;
             break;
         case 2:
-            if((I.true_not_reco ? p.energy_dep : p.range_reco_energy) > 40.0 ) vis_primaries.at(2)++;
+            vis_primaries.at(2)++;
             break;
         case 3:
             vis_primaries.at(3)++;
             break;
         case 4:
-            if((I.true_not_reco ? p.energy_dep : p.range_reco_energy) > 25.0 ) vis_primaries.at(4)++;
+            if((I.true_not_reco ? p.energy_dep : p.range_reco_energy) > 40.0 ) vis_primaries.at(4)++;
             break;
         default:
             break;
