@@ -55,6 +55,7 @@ int main()
     data.add_common_variable("signal_1mu1pvis", kCount, s1mu1pVis);
     data.add_common_variable("signal_1muNpvis", kCount, s1muNpVis);
     data.add_common_variable("signal_1muIncvis", kCount, s1muIncVis);
+    data.add_common_variable("contained_adj", kCount, sContainedAdj);
     data.add_common_variable("muon_energy", kMuonEnergy, sEverything);
     data.add_common_variable("proton_energy", kProtonEnergy, sEverything);
 
@@ -65,7 +66,6 @@ int main()
     data.add_truth_variable("interaction_time", kInteractionTime, sEverything);
     data.add_truth_variable("neutrino_energy", kNeutrinoEnergy, sNeutrino);
     data.add_truth_variable("interaction_type", kInteractionType, sNeutrino);
-    data.add_truth_variable("contained_adj", kCount, sContainedAdj);
     data.add_truth_variable("pmtcrt", kCRTPMT, sEverything);
 
     // Common particle variables.
