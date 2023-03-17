@@ -96,11 +96,34 @@ MAKEVAR(kVoxels)
         vox += p.voxels;
     return vox;
 }
+
 MAKEVAR(kVertexX)
 {
     if(S(evt, I))
         return I.vertex_x;
     else return -1;
+}
+
+MAKEVAR(kFailureMode)
+{
+    if(S(evt, I))
+    {
+        uint16_t matches(0);
+        for(const Interaction& ri : evt.reco_interactions)
+            if(kMatchID(evt, ri, S) == I.interaction_index) ++matches;
+
+        uint16_t primary_failure(0);
+        for(const Particle& p : I.particles)
+            if(evt.find_particle(p) && evt.get_particle(p).primary != p.primary) ++primary_failure;
+
+        uint16_t pid_failure(0);
+        for(const Particle& p : I.particles)
+            if(evt.find_particle(p) && evt.get_particle(p).pid == p.pid) ++ pid_failure;
+
+        return std::pow(2, matches!=1) * std::pow(3, primary_failure!=0) * std::pow(5, pid_failure!=0);
+    }
+    else
+        return -1;
 }
 
 MAKEVAR(kVertexY)
