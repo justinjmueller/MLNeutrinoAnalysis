@@ -68,6 +68,7 @@ int main()
     data.add_truth_variable("interaction_type", kInteractionType, sNeutrino);
     data.add_truth_variable("failure_mode", kFailureMode, sEverything);
     data.add_truth_variable("pmtcrt", kCRTPMT, sEverything);
+    data.add_truth_variable("vertex_resolution", kVertexResolution, sEverything);
 
     // Common particle variables.
     data.add_common_pvariable("event_id", kPEventID, sPEverything);

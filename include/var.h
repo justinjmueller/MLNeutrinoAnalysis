@@ -97,13 +97,6 @@ MAKEVAR(kVoxels)
     return vox;
 }
 
-MAKEVAR(kVertexX)
-{
-    if(S(evt, I))
-        return I.vertex_x;
-    else return -1;
-}
-
 MAKEVAR(kFailureMode)
 {
     if(S(evt, I))
@@ -126,6 +119,23 @@ MAKEVAR(kFailureMode)
     }
     else
         return -1;
+}
+
+MAKEVAR(kVertexResolution)
+{
+    if(S(evt, I) && evt.find_interaction(I))
+    {
+        const Interaction& RI(evt.get_interaction(I));
+        return std::sqrt(std::pow(I.vertex_x - RI.vertex_x, 2) + std::pow(I.vertex_y - RI.vertex_y, 2) + std::pow(I.vertex_z - RI.vertex_z, 2));
+    }
+    else return -1;
+}
+
+MAKEVAR(kVertexX)
+{
+    if(S(evt, I))
+        return I.vertex_x;
+    else return -1;
 }
 
 MAKEVAR(kVertexY)
