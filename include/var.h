@@ -120,7 +120,9 @@ MAKEVAR(kFailureMode)
         for(const Particle& p : I.particles)
             if(evt.find_particle(p) && evt.get_particle(p).pid != p.pid) ++pid_failure;
 
-        return std::pow(2, matches!=1) * std::pow(3, primary_failure!=0) * std::pow(5, pid_failure!=0);
+        bool fiducial_failure(sFiducial(evt, I) && evt.find_interaction(I) && !sFiducial(evt, evt.get_interaction(I)));
+
+        return std::pow(2, matches!=1) * std::pow(3, primary_failure!=0) * std::pow(5, pid_failure!=0) * std::pow(7, fiducial_failure);
     }
     else
         return -1;
