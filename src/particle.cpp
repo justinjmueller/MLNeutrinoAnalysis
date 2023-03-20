@@ -68,9 +68,9 @@ Particle::Particle(const CSVRow& row)
   }
   else
   {
-    vtx0x = -1.0;
-    vtx0y = -1.0;
-    vtx0z = -1.0;
+    vtx0x = 0.0;
+    vtx0y = 0.0;
+    vtx0z = 0.0;
   }
 
   vtx = row[30];
@@ -83,9 +83,9 @@ Particle::Particle(const CSVRow& row)
   }
   else
   {
-    vtx1x = -1.0;
-    vtx1y = -1.0;
-    vtx1z = -1.0;
+    vtx1x = 0.0;
+    vtx1y = 0.0;
+    vtx1z = 0.0;
   }
   
   parent_primaries = "None";
