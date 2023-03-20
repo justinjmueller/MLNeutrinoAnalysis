@@ -118,7 +118,7 @@ MAKEVAR(kFailureMode)
 
         uint16_t pid_failure(0);
         for(const Particle& p : I.particles)
-            if(evt.find_particle(p) && evt.get_particle(p).pid == p.pid) ++ pid_failure;
+            if(evt.find_particle(p) && evt.get_particle(p).pid != p.pid) ++pid_failure;
 
         return std::pow(2, matches!=1) * std::pow(3, primary_failure!=0) * std::pow(5, pid_failure!=0);
     }
