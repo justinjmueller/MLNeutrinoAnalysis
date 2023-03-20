@@ -207,3 +207,21 @@ const Particle& Event::get_particle(const Particle& p) const
     return interactions.at(r.first).particles.at(r.second);
   }
 }
+
+bool Event::find_parent_interaction(const Particle& p) const
+{
+  const std::pair<uint16_t, uint16_t>& m = std::make_pair(p.particle_index, p.volume);
+  if(p.true_not_reco)
+    return particle_map.find(m) != particle_map.end();
+  else
+    return reco_particle_map.find(m) != reco_particle_map.end();
+}
+
+const Interaction& Event::get_parent_interaction(const Particle& p) const
+{
+  const std::pair<uint16_t, uint16_t>& m = std::make_pair(p.particle_index, p.volume);
+  if(p.true_not_reco)
+    return interactions.at(particle_map.at(m).first);
+  else
+    return reco_interactions.at(reco_particle_map.at(m).first);
+}

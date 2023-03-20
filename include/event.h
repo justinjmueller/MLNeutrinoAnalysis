@@ -30,6 +30,8 @@ class Event
   const FMatch& get_fmatch(const Interaction& in) const;
   bool find_particle(const Particle& p) const;
   const Particle& get_particle(const Particle& p) const;
+  bool find_parent_interaction(const Particle& p) const;
+  const Interaction& get_parent_interaction(const Particle& p) const;
   int32_t image_index;
   int16_t triggering_volume;
   std::vector<Neutrino> neutrinos;
