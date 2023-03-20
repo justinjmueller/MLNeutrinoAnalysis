@@ -94,4 +94,17 @@ MAKEPVAR(kSMProton)
     return S(evt, p) ? p.softmax_proton : -1;
 }
 
+MAKEPVAR(kVertexDistance)
+{
+    if(S(evt, p) && evt.find_parent_interaction(p))
+    {
+        const Interaction& I = evt.get_parent_interaction(p);
+        float d0(std::sqrt(std::pow(I.vertex_x - p.vtx0x, 2) + std::pow(I.vertex_y - p.vtx0y, 2) + std::pow(I.vertex_z - p.vtx0z, 2)));
+        float d1(std::sqrt(std::pow(I.vertex_x - p.vtx1x, 2) + std::pow(I.vertex_y - p.vtx1y, 2) + std::pow(I.vertex_z - p.vtx1z, 2)));
+        return d0 < d1 ? d0 : d1;
+    }
+    else
+        return -1;
+}
+
 #endif
