@@ -135,6 +135,11 @@ void Event::pid_reweight()
     for(Particle& p : i.particles)
     {
       auto tmp = p.softmax_primary > 0.93315 * p.softmax_nonprimary;
+
+      float d0(std::sqrt(std::pow(i.vertex_x - p.vtx0x, 2) + std::pow(i.vertex_y - p.vtx0y, 2) + std::pow(i.vertex_z - p.vtx0z, 2)));
+      float d1(std::sqrt(std::pow(i.vertex_x - p.vtx1x, 2) + std::pow(i.vertex_y - p.vtx1y, 2) + std::pow(i.vertex_z - p.vtx1z, 2)));
+      if((d0 > 0 && d0 < 10) || (d1 > 0 && d1 < 10)) tmp = true;
+
       if(tmp && !p.primary)
       {
         p.primary = true;
