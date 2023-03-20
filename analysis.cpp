@@ -58,6 +58,7 @@ int main()
     data.add_common_variable("contained_adj", kCount, sContainedAdj);
     data.add_common_variable("muon_energy", kMuonEnergy, sEverything);
     data.add_common_variable("proton_energy", kProtonEnergy, sEverything);
+    data.add_common_variable("inside_volume", kCount, sVertexInsideVolume);
 
     // Truth interaction variables.
     data.add_truth_variable("signal_true", kCount, sSignalTrue);

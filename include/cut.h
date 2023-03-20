@@ -52,6 +52,16 @@ MAKECUT(sFiducial)
     return fiducial;
 }
 
+MAKECUT(sVertexInsideVolume)
+{
+    bool inside(false);
+    inside = inside || ((I.vertex_x > -358.49) && (I.vertex_x < -61.94));
+    inside = inside || ((I.vertex_x < 358.49) && (I.vertex_x > 61.94));
+    inside = inside && ((I.vertex_y > -181.86) && (I.vertex_y < 134.96));
+    inside = inside && ((I.vertex_z > -895.95) && (I.vertex_z < 894.95));
+    return inside;
+}
+
 MAKECUT(sFlashTime)
 {
     if(evt.find_interaction(I) && evt.find_fmatch(I))
