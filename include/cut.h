@@ -32,6 +32,16 @@ MAKECUT(sContained)
     return I.contained;
 }
 
+MAKECUT(sVertexInsideVolume)
+{
+    bool inside(false);
+    inside = inside || ((I.vertex_x > -358.49) && (I.vertex_x < -61.94));
+    inside = inside || ((I.vertex_x < 358.49) && (I.vertex_x > 61.94));
+    inside = inside && ((I.vertex_y > -181.86) && (I.vertex_y < 134.96));
+    inside = inside && ((I.vertex_z > -895.95) && (I.vertex_z < 894.95));
+    return inside;
+}
+
 MAKECUT(sContainedAdj)
 {
     bool contained(false);
@@ -44,22 +54,71 @@ MAKECUT(sContainedAdj)
 
 MAKECUT(sFiducial)
 {
-    bool fiducial(false);
-    fiducial = fiducial || ((I.vertex_x > -358.49 + FVPAD) && (I.vertex_x < -61.94 - FVPAD));
-    fiducial = fiducial || ((I.vertex_x < 358.49 - FVPAD) && (I.vertex_x > 61.94 + FVPAD));
-    fiducial = fiducial && ((I.vertex_y > -181.86 + FVPAD) && (I.vertex_y < 134.96 - FVPAD));
-    fiducial = fiducial && ((I.vertex_z > -895.95 + FVPADZD) && (I.vertex_z < 894.95 - FVPADZU));
-    return fiducial;
-}
+    typedef ROOT::Math::XYZPoint Pt;
+    float vtxx(0), vtxy(0), vtxz(0);
+    if(!sVertexInsideVolume(evt, I))
+    {
+        uint16_t pn(0);
+        std::vector<Pt> points;
+        for(const Particle& p : I.particles)
+        {
+            if(p.primary)
+            {
+                ++pn;
+                points.push_back(Pt(p.vtx0x, p.vtx0y, p.vtx0z));
+                points.push_back(Pt(p.vtx1x, p.vtx1y, p.vtx1z));
+                if(pn == 2)
+                {
+                    std::vector<double> distances;
+                    distances.push_back(std::sqrt(Pt(points[0].X() - points[2].X(), points[0].Y() - points[2].Y(), points[0].Z() - points[2].Z()).Mag2()));
+                    distances.push_back(std::sqrt(Pt(points[0].X() - points[3].X(), points[0].Y() - points[3].Y(), points[0].Z() - points[3].Z()).Mag2()));
+                    distances.push_back(std::sqrt(Pt(points[1].X() - points[2].X(), points[1].Y() - points[2].Y(), points[1].Z() - points[2].Z()).Mag2()));
+                    distances.push_back(std::sqrt(Pt(points[1].X() - points[3].X(), points[1].Y() - points[3].Y(), points[1].Z() - points[3].Z()).Mag2()));
+                    size_t min(std::min_element(distances.begin(), distances.end()) - distances.begin());
+                    size_t i, j;
+                    switch (min)
+                    {
+                    case 0:
+                        i = 0;
+                        j = 2;
+                        break;
+                    case 1:
+                        i = 0;
+                        j = 3;
+                        break;
+                    case 2:
+                        i = 1;
+                        j = 2;
+                        break;
+                    case 3:
+                        i = 1;
+                        j = 3;
+                        break;
+                    default:
+                        i = 0;
+                        j = 2;
+                        break;
+                    }
+                    vtxx = (points[i].X() + points[j].X())/2.0;
+                    vtxy = (points[i].Y() + points[j].Y())/2.0;
+                    vtxz = (points[i].Z() + points[j].Z())/2.0;
+                }
+            }
+        }
+    }
+    else
+    {
+        vtxx = I.vertex_x;
+        vtxy = I.vertex_y;
+        vtxz = I.vertex_z;
+    }
 
-MAKECUT(sVertexInsideVolume)
-{
-    bool inside(false);
-    inside = inside || ((I.vertex_x > -358.49) && (I.vertex_x < -61.94));
-    inside = inside || ((I.vertex_x < 358.49) && (I.vertex_x > 61.94));
-    inside = inside && ((I.vertex_y > -181.86) && (I.vertex_y < 134.96));
-    inside = inside && ((I.vertex_z > -895.95) && (I.vertex_z < 894.95));
-    return inside;
+    bool fiducial(false);
+    fiducial = fiducial || ((vtxx > -358.49 + FVPAD) && (vtxx < -61.94 - FVPAD));
+    fiducial = fiducial || ((vtxx < 358.49 - FVPAD) && (vtxx > 61.94 + FVPAD));
+    fiducial = fiducial && ((vtxy > -181.86 + FVPAD) && (vtxy < 134.96 - FVPAD));
+    fiducial = fiducial && ((vtxz > -895.95 + FVPADZD) && (vtxz < 894.95 - FVPADZU));
+    return fiducial;
 }
 
 MAKECUT(sFlashTime)
