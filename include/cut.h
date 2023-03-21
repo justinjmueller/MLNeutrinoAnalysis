@@ -134,11 +134,6 @@ MAKECUT(s1mu1p)
     return I.primary_string == "0ph0e1mu0pi1p";
 }
 
-MAKECUT(sSignalTrue)
-{
-    return s1mu1p(evt, I) && sNeutrino(evt, I) && sTriggeringVolume(evt, I);
-}
-
 MAKECUT(s1mu1pVis)
 {
     std::vector<uint16_t> vis_primaries(5, 0);
@@ -158,6 +153,11 @@ MAKECUT(s1muIncVis)
     std::vector<uint16_t> vis_primaries(5, 0);
     find_vis_primaries(I, vis_primaries);
     return (vis_primaries[2] == 1);
+}
+
+MAKECUT(sSignalTrue)
+{
+    return s1mu1p(evt, I) && sNeutrino(evt, I) && sTriggeringVolume(evt, I);
 }
 
 MAKECUT(sSignalReco)

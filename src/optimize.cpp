@@ -33,7 +33,7 @@ double Optimize::operator()(const std::vector<double>& m) const
             }
         }
     }
-    return -1 * ((double(purity_numerator) / purity_denominator) * (double(efficiency_numerator) / efficiency_denominator));
+    return 1.0 / ((double(purity_numerator) / purity_denominator) * (double(efficiency_numerator) / efficiency_denominator));
 }
 
 Event Optimize::reweight_event(const Event& evt, const std::vector<double>& m) const
