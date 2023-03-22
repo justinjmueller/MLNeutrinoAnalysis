@@ -19,8 +19,8 @@ MAKEPCUT(sPContained)
 
 MAKEPCUT(sPNeutrino)
 {
-    if(evt.particle_map.find(std::make_pair(p.particle_index, p.volume)) != evt.particle_map.end())
-        return evt.interactions.at(evt.particle_map.at(std::make_pair(p.particle_index, p.volume)).first).nu_id > 0;
+    if(evt.find_parent_interaction(p))
+        return evt.get_parent_interaction(p).nu_id > 0;
     return false;
 }
 
