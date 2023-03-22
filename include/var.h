@@ -200,6 +200,16 @@ MAKEVAR(kTPCExtZ1)
         return 0;
 }
 
+MAKEVAR(kRangeVisibleEnergy)
+{
+    return S(evt, I) ? I.reco_vis_energy : -1;
+}
+
+MAKEVAR(kTrueVisibleEnergy)
+{
+    return S(evt, I) ? I.vis_energy : -1;
+}
+
 MAKEVAR(kMuonEnergy)
 {
     if(S(evt, I))

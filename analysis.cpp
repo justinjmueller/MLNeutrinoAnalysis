@@ -56,6 +56,7 @@ int main()
     data.add_common_variable("signal_1muNpvis", kCount, s1muNpVis);
     data.add_common_variable("signal_1muIncvis", kCount, s1muIncVis);
     data.add_common_variable("contained_adj", kCount, sContainedAdj);
+    data.add_common_variable("range_visible_energy", kRangeVisibleEnergy, sEverything);
     data.add_common_variable("muon_energy", kMuonEnergy, sEverything);
     data.add_common_variable("proton_energy", kProtonEnergy, sEverything);
     data.add_common_variable("inside_volume", kCount, sVertexInsideVolume);
@@ -70,6 +71,7 @@ int main()
     data.add_truth_variable("failure_mode", kFailureMode, sEverything);
     data.add_truth_variable("pmtcrt", kCRTPMT, sEverything);
     data.add_truth_variable("vertex_resolution", kVertexResolution, sEverything);
+    data.add_truth_variable("true_visible_energy", kTrueVisibleEnergy, sEverything);
 
     // Common particle variables.
     data.add_common_pvariable("event_id", kPEventID, sPEverything);
