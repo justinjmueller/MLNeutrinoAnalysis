@@ -84,6 +84,7 @@ int main()
     data.add_common_pvariable("range_reco_energy", kParticleRREnergy, sPEverything);
     data.add_common_pvariable("vertex_distance", kVertexDistance, sPEverything);
     data.add_common_pvariable("contained", kPCount, sPContained);
+    data.add_common_pvariable("michel_present", kPCount, sPMichel);
 
     // Truth particle variables.
     data.add_truth_pvariable("neutrino", kPCount, sPNeutrino);

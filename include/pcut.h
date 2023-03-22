@@ -24,4 +24,11 @@ MAKEPCUT(sPNeutrino)
     return false;
 }
 
+MAKEPCUT(sPMichel)
+{
+    if(evt.find_parent_interaction(p))
+        return evt.get_parent_interaction(p).michel_present;
+    return false;
+}
+
 #endif
