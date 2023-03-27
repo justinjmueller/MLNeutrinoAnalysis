@@ -111,5 +111,10 @@ void Interaction::add_particle(const Particle& p)
     vis_energy += p.energy_dep;
     reco_vis_energy += p.range_reco_energy;
   }
+  else
+  {
+    vis_energy += p.energy_dep;
+    reco_vis_energy += p.calo_energy;
+  }
   voxels += p.voxels;
 }
