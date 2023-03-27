@@ -52,6 +52,32 @@ MAKECUT(sContainedAdj)
     return contained;
 }
 
+MAKECUT(sContainedPart)
+{
+    double x0(1000), x1(-1000), y0(1000), y1(-1000), z0(1000), z1(-1000);
+    for(const Particle& p : I.particles)
+    {
+        if(p.vtx0x < x0) x0 = p.vtx0x;
+        if(p.vtx1x < x0) x0 = p.vtx1x;
+        if(p.vtx0x > x1) x1 = p.vtx0x;
+        if(p.vtx1x > x1) x1 = p.vtx1x;
+        if(p.vtx0y < y0) y0 = p.vtx0y;
+        if(p.vtx1y < y0) y0 = p.vtx1y;
+        if(p.vtx0y > y1) y1 = p.vtx0y;
+        if(p.vtx1y > y1) y1 = p.vtx1y;
+        if(p.vtx0z < z0) z0 = p.vtx0z;
+        if(p.vtx1z < z0) z0 = p.vtx1z;
+        if(p.vtx0z > z1) z1 = p.vtx0z;
+        if(p.vtx1z > z1) z1 = p.vtx1z;
+    }
+    bool contained(false);
+    contained = contained || ((x0 > -358.49 + CNTPAD) && (x1 < -61.94 - CNTPAD));
+    contained = contained || ((x1 < 358.49 - CNTPAD) && (x0 > 61.94 + CNTPAD));
+    contained = contained && ((y0 > -181.86 + CNTPAD) && (y1 < 134.96 - CNTPAD));
+    contained = contained && ((z0 > -895.95 + CNTPAD) && (z1 < 894.95 - CNTPAD));
+    return contained;
+}
+
 MAKECUT(sFiducial)
 {
     typedef ROOT::Math::XYZPoint Pt;

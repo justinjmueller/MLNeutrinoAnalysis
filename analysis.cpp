@@ -56,6 +56,7 @@ int main()
     data.add_common_variable("signal_1muNpvis", kCount, s1muNpVis);
     data.add_common_variable("signal_1muIncvis", kCount, s1muIncVis);
     data.add_common_variable("contained_adj", kCount, sContainedAdj);
+    data.add_common_variable("contained_part", kCount, sContainedPart);
     data.add_common_variable("range_visible_energy", kRangeVisibleEnergy, sEverything);
     data.add_common_variable("muon_energy", kMuonEnergy, sEverything);
     data.add_common_variable("proton_energy", kProtonEnergy, sEverything);
