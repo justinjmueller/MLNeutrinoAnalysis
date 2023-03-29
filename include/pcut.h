@@ -31,4 +31,9 @@ MAKEPCUT(sPMichel)
     return false;
 }
 
+MAKEPCUT(sPOneToOne)
+{
+    return evt.find_particle(p) && evt.find_particle(evt.get_particle(p)) && evt.get_particle(evt.get_particle(p)).particle_index == p.particle_index;
+}
+
 #endif
