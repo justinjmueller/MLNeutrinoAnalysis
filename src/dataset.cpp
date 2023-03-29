@@ -18,6 +18,7 @@
 
 #include "TFile.h"
 #include "TTree.h"
+#include "TGraph.h"
 #include "TNtupleD.h"
 
 template <class T>
@@ -26,6 +27,17 @@ void read_csv(std::string csv, std::vector<T>& obj_vector);
 Dataset::Dataset(std::string path, std::string dname, std::string sub)
 : name(dname)
 {
+
+  TFile bethebloch("bethebloch.root", "read");
+  //std::map<uint16_t, TGraph*> inverse_bb;
+  std::map<uint16_t, TGraph*> forward_bb;
+  //inverse_bb.insert(std::make_pair(2, (TGraph*)bethebloch.Get("muon_TtoRR")));
+  //inverse_bb.insert(std::make_pair(3, (TGraph*)bethebloch.Get("pion_TtoRR")));
+  //inverse_bb.insert(std::make_pair(4, (TGraph*)bethebloch.Get("proton_TtoRR")));
+  forward_bb.insert(std::make_pair(2, (TGraph*)bethebloch.Get("muon_RRtoT")));
+  forward_bb.insert(std::make_pair(3, (TGraph*)bethebloch.Get("pion_RRtoT")));
+  forward_bb.insert(std::make_pair(4, (TGraph*)bethebloch.Get("proton_RRtoT")));
+
   std::vector<Particle> particles;
   read_csv(path + "particles" + sub + ".csv", particles);
   std::vector<Particle> reco_particles;
@@ -145,6 +157,11 @@ Dataset::Dataset(std::string path, std::string dname, std::string sub)
   {
     evt.second.generate_pointers();
     evt.second.pid_reweight();
+    for(Interaction& I : evt.second.reco_interactions)
+    {
+      for(Particle& p : I.particles)
+        if(p.pid >= 2) p.range_reco_energy = forward_bb.at(p.pid)->Eval(p.length);
+    }
     for(IMatch& m : evt.second.matches_ptt)
     {
       auto ptt_res = find_match(m, evt.second.reco_interactions, evt.second.interactions);
@@ -158,6 +175,9 @@ Dataset::Dataset(std::string path, std::string dname, std::string sub)
         m.update(evt.second.interactions.at(ttp_res.first), evt.second.reco_interactions.at(ttp_res.second));
     }
   }
+  //inverse_bb.clear();
+  forward_bb.clear();
+  bethebloch.Close();
 }
 
 Dataset::Dataset(std::string dname)

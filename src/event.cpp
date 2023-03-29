@@ -132,35 +132,13 @@ void Event::pid_reweight()
   std::vector<std::string> types = {"ph", "e", "mu", "pi", "p"};
   for(Interaction& i : reco_interactions)
   {
-    /*for(Particle& p : i.particles)
-    {
-      auto tmp = p.softmax_primary > 0.93315 * p.softmax_nonprimary;
-
-      float d0(std::sqrt(std::pow(i.vertex_x - p.vtx0x, 2) + std::pow(i.vertex_y - p.vtx0y, 2) + std::pow(i.vertex_z - p.vtx0z, 2)));
-      float d1(std::sqrt(std::pow(i.vertex_x - p.vtx1x, 2) + std::pow(i.vertex_y - p.vtx1y, 2) + std::pow(i.vertex_z - p.vtx1z, 2)));
-      if((d0 > 0 && d0 < 10) || (d1 > 0 && d1 < 10)) tmp = true;
-
-      if(tmp && !p.primary)
-      {
-        p.primary = true;
-        i.primary_multiplicity.at(p.pid)++;
-      }
-      else if(!tmp && p.primary)
-      {
-        p.primary = false;
-        i.primary_multiplicity.at(p.pid)--;
-      }
-    }*/
     for(Particle& p : i.particles)
     {
       bool prim = p.softmax_primary >= 0.1 ? true : false;
-      //1.0*p.softmax_primary > 0.93315*p.softmax_nonprimary;
       float d0(std::sqrt(std::pow(i.vertex_x - p.vtx0x, 2) + std::pow(i.vertex_y - p.vtx0y, 2) + std::pow(i.vertex_z - p.vtx0z, 2)));
       float d1(std::sqrt(std::pow(i.vertex_x - p.vtx1x, 2) + std::pow(i.vertex_y - p.vtx1y, 2) + std::pow(i.vertex_z - p.vtx1z, 2)));
       if((d0 > 0 && d0 < 10) || (d1 > 0 && d1 < 10)) prim = true;
 
-      //std::vector<double> psm = {m[2]*p.softmax_photon, m[3]*p.softmax_electron, m[4]*p.softmax_muon, m[5]*p.softmax_pion, m[6]*p.softmax_proton};
-      //size_t pid = std::max_element(psm.begin(), psm.end()) - psm.begin();
       size_t pid(0);
       if(p.softmax_photon != 0 || p.softmax_electron != 0)
         pid = p.softmax_photon > p.softmax_electron ? 0 : 1;
